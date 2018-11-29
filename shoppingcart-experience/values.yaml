@@ -8,9 +8,11 @@ deploymentStrategy:
   maxSurge: 1
   maxUnavailable: 1
 containerinfo:
-  image: illin5564.corp.amdocs.com:7000/shoppingcart-experience-service
+#  image: illin5564.corp.amdocs.com:7000/shoppingcart-experience-service
+  image: ubuntu
   imagePullPolicy: IfNotPresent
-  imageTag: 0.1.1-0031
+#  imageTag: 0.1.1-0031
+  imageTag: latest
   javaOptions:
     msnext:
     jvm: -Xms512m -Xmx512m -XX:MaxRAM=1024m -XX:+UseSerialGC
