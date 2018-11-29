@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "shoppingcart-experience-app-id",
+      "userName": "shoppingcart-experience-app-id",
+      "userType": "UamsUser",
+      "password": "{}",
+      "active":true,
+      "roles": [
+        "shoppingcart-experience-app-idAppIdentityRole",
+        "Write"
+      ],
+      "a3sUserExtension": {
+        "isEnabled": true,
+        "isAccountNeverExpired": true,
+        "properties": {
+        }
+      }
+    }
+  ],
+  "operation": {
+    "deleteFirst": false,
+    "updateExisting": true,
+    "createNew": true,
+    "returnProcessedObjects": true,
+    "failOnError": true
+  }
+}

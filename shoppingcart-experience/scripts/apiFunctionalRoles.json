@@ -1,0 +1,40 @@
+{
+  "roles": [
+    {
+      "name": "ShoppingCartUpdate",
+      "scope": "ShoppingCart",
+      "type": "ROLE"
+    },
+    {
+      "name": "ShoppingCartCreate",
+      "scope": "ShoppingCart",
+      "type": "ROLE"
+    },
+    {
+      "name": "ShoppingCartRetrieve",
+      "scope": "ShoppingCart",
+      "type": "ROLE"
+    },
+    {
+      "name": "ShoppingCartCheckout",
+      "scope": "ShoppingCart",
+      "type": "ROLE"
+    },
+    {
+      "name": "ConfiguratorRetrieve",
+      "scope": "Configurator",
+      "type": "ROLE"
+    },
+    {
+      "name": "ConfiguratorUpdate",
+      "scope": "Configurator",
+      "type": "ROLE"
+    },
+   
+    {
+      "name": "ResourceRetrieve",
+      "scope": "Resource",
+      "type": "ROLE"
+    }
+  ]
+}

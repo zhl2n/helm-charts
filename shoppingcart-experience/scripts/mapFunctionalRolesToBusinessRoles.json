@@ -1,0 +1,41 @@
+{
+  "roles": [
+    {
+      "id": "ReadRole",
+      "name": "ReadRole",
+      "type": "ROLE",
+      "roles": [
+        "ResourceRetrieve",
+        "ConfiguratorRetrieve",
+        "ShoppingCartRetrieve"
+      ]
+    },
+    {
+      "id": "WriteRole",
+      "name": "WriteRole",
+      "type": "ROLE",
+      "roles": [
+        "ShoppingCartCreate",
+        "ShoppingCartUpdate",
+        "ShoppingCartCheckout",
+        "ConfiguratorUpdate"
+      ]
+    },
+    {
+      "id": "SupervisorRole",
+      "name": "SupervisorRole",
+      "type": "ROLE",
+      "roles": [
+        "OrderSubmit",
+        "OrderCancel"
+      ]
+    }
+  ],
+  "operation": {
+    "deleteFirst": false,
+    "updateExisting": true,
+    "createNew": false,
+    "returnProcessedObjects": true,
+    "failOnError": true
+  }
+}

@@ -1,0 +1,9 @@
+{{- if .Values.appConfigMap.apigwEnabled }}
+apiVersion: "apimgt.amdocs.com/v1"
+kind: AmdocsApi
+metadata:
+  name: "{{ .Chart.Name }}"
+description: "{{ .Chart.Description }}"
+uri: "http://{{ .Chart.Name }}-service:8080"
+swagger: "configmap://{{ .Chart.Name }}-apigw"
+{{- end }}

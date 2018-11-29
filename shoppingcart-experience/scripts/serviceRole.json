@@ -1,0 +1,33 @@
+{
+  "roles": [
+    {
+      "id": "shoppingcart-experience-app-idAppIdentityRole",
+      "name": "shoppingcart-experience-app-idAppIdentityRole",
+      "scope": null,
+      "type": "ROLE",
+      "roles": [
+        "ServiceAppIdentityRole",
+        "Write",
+        "ShoppingCartUpdate",
+        "ShoppingCartCreate",
+        "ShoppingCartRetrieve",
+        "ShoppingCartCheckout",
+        "ConfiguratorRetrieve",
+        "ConfiguratorUpdate",      
+        "ResourceRetrieve",
+        "OrderCancel",
+        "OrderSubmit"
+
+      ],
+      "properties": {
+      }
+    }
+  ],
+  "operation": {
+    "deleteFirst": false,
+    "updateExisting": true,
+    "createNew": true,
+    "returnProcessedObjects": true,
+    "failOnError": true
+  }
+}

@@ -1,0 +1,47 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shoppingcart-experience-cleanup-delete
+  labels:
+    project: shoppingcart-experience
+    provider: amdocs
+    microservice: {{ template "name" . }}
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    satellite: "helm"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade,post-rollback,post-delete
+    "helm.sh/hook-weight": "1000"
+spec:
+  template:
+    metadata:
+      name:  {{ printf "%s-%s" "shoppingcart-experience" .Chart.Name | quote }}
+      labels:
+        provider: amdocs
+        project: shoppingcart-experience
+        microservice: {{ template "name" . }}
+        release: "{{ .Release.Name }}"
+        app: {{ template "fullname" . }}
+        satellite: "helm"
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{.Values.jobs.helmServiceAccount}}
+      containers:
+        - name: helm-cleanup
+          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
+          imagePullPolicy: "{{ .Values.containerinfo.imagePullPolicy }}"
+          command: ["python", "-c", {{ .Files.Get "scripts/helmCleanup.py" | quote }} ]
+          env:
+          - name: MICROSERVICE_NAME
+            value: {{ .Release.Name }}
+          - name: JOBS_TO_BE_DELETED
+            value: "shoppingcart-experience-cleanup-delete"
+          - name: CONFIG_MAPS_TO_BE_DELETED
+            value: ""
+          - name: SECRETS_TO_BE_DELETED
+            value: "{{ .Values.jobs.secret.name }}"
+          - name: DEBUG
+            value: "{{ .Values.jobs.verbose.cleanup }}"
+      imagePullSecrets:
+        - name: "{{ .Values.jobs.secret.name }}"

@@ -1,0 +1,3773 @@
+    swagger: '2.0'
+
+    ################################################################################
+    #                              API Information                                 #
+    ################################################################################
+
+    info:
+      version: v10.2
+      x-amdocs:
+        service-principals:
+          - shoppingcart-experience-app-id
+      title: Amdocs Shopping Cart Experince APIs
+      description: |              
+        Shopping Cart resource is used for the temporarily selection and reservation of product offerings in e-commerce, call center and retail purchase. Shopping cart supports purchase of both physical and digital goods and service (e.g. handset, telecom network service). Shopping Cart contain list of cart items, a reference to customer (partyRole) or contact medium in case customer not exist, and the total items price including promotions  
+      license:
+        name: Amdocs Inc.
+        url: http://www.amdocs.com
+      contact:
+        name: Amdocs Inc.
+        url: http://www.amdocs.com
+        email: support@amdocs.com
+
+    x-dox-DesignDocs:
+    - description: |
+        Shopping Cart Resource and APIs
+        url: http://confluence/display/DRE/ShoppingCart+-+Resource+and+API
+        url: http://confluence/display/DRE/Shopping+Cart+-+Resource+and+API+-+Implementation 
+
+    ################################################################################
+    #                  Host, Base Path, Schemes and Content Types                  #
+    ################################################################################
+
+    # Dummy host
+    host: 'amdocs.com:10101'
+    # port: 10251
+
+    basePath: /commerce/v1/
+
+    schemes:
+    - https
+
+    consumes:
+      - application/json
+    produces:
+      - application/json
+
+    #
+    # Resources
+    #
+    paths:
+      /shoppingCart/{shoppingCartId}/addMobileCartItem:
+        post:
+          tags:
+          - "ShoppingCart"
+          operationId: addMobileCartItemToShoppingCart
+          description: |
+            Task to add new mobile cart item.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"  
+            - $ref: "#/parameters/path-shoppingCartId"            
+            - name: cartItemInput
+              in: body
+              description: "Mobile item to be added to the cart."
+              required: true
+              schema:
+                $ref: "#/definitions/AddMobileCartItemInput"            
+          responses:
+            200:
+              description: |
+                *OK* - Mobile cart item added to the Shopping Cart successfully.
+              schema:
+                $ref: "#/definitions/AddMobileCartItemOutput"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+
+
+      /shoppingCart/{shoppingCartId}/addAccessoryCartItem:
+        post:
+          tags:
+          - "ShoppingCart"
+          operationId: addAccessoryCartItemToShoppingCart
+          description: |
+            Task to creates Accessory Cart Item. Perform validation checks and price calculation
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"  
+            - $ref: "#/parameters/path-shoppingCartId"            
+            - name: cartItemInput
+              in: body
+              description: Accessories item to be added to the cart."
+              required: true
+              schema:
+                $ref: "#/definitions/AddAccessoryCartItemInput"            
+          responses:
+            200:
+              description: |
+                *OK* - Accessories cart item added to the Shopping Cart successfully.
+              schema:
+                $ref: "#/definitions/AddAccessoryCartItemOutput"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+
+      /shoppingCart/{shoppingCartId}/accessoryCartItem/{accessoryCartItemId}:
+        patch:
+          tags:
+          - "ShoppingCart"
+          operationId: patchAccessoryCartItem
+          description: |
+            This task modifies the information on accessoryCartItem. For example adding or changing the quantity.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel" 
+            - $ref: "#/parameters/path-shoppingCartId"
+            - $ref: "#/parameters/path-accessoryCartItemId"
+            - name: accessoryCartItemPatch
+              in: body
+              description: The Resource's updated details
+              required: true
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/PatchElement"
+          responses:
+            200:
+              description: |
+                *OK* - Retrieve modified shopping cart details successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+    
+      /shoppingCart/{shoppingCartId}/addMobileDeviceCartItem:
+        post:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartUpdate
+          tags:
+          - "ShoppingCart"
+          operationId: addMobileDeviceCartItemToShoppingCart
+          description: |
+            Task to creates Mobile Device Cart Item. Perform validation checks and price calculation
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"  
+            - $ref: "#/parameters/path-shoppingCartId"            
+            - name: cartItemInput
+              in: body
+              description: Mobile Device item to be added to the cart."
+              required: true
+              schema:
+                $ref: "#/definitions/AddMobileDeviceCartItemInput"            
+          responses:
+            200:
+              description: |
+                *OK* - Mobile Device cart item added to the Shopping Cart successfully.
+              schema:
+                $ref: "#/definitions/AddMobileDeviceCartItemOutput"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+
+      /shoppingCart/{shoppingCartId}/mobileDeviceCartItem/{mobileDeviceCartItemId}:
+        patch:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartUpdate
+          tags:
+          - "ShoppingCart"
+          operationId: patchMobileDeviceCartItem
+          description: |
+            This task modifies the information on mobileDeviceCartItem. For example  replace the variant or another device.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel" 
+            - $ref: "#/parameters/path-shoppingCartId"
+            - $ref: "#/parameters/path-mobileDeviceCartItemId"
+            - name: mobileDeviceCartItemPatch
+              in: body
+              description: The Resource's updated details
+              required: true
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/PatchElement"
+          responses:
+            200:
+              description: |
+                *OK* - Retrieve modified shopping cart details successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"        
+
+      /shoppingCart/{shoppingCartId}/removeCartItem:
+        post:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartUpdate
+          tags:
+          - "ShoppingCart"
+          operationId: removeItemFromShoppingCart
+          description: |
+            Task to remove root cart item with its included cart items.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - $ref: "#/parameters/path-shoppingCartId"
+            - name: removeCartItemInput
+              in: body
+              description: "Items to be removed from the cart"
+              required: true
+              schema:
+                $ref: "#/definitions/RemoveCartItemInput"                
+          responses:
+            200:
+              description: |
+                *OK* - Items removed successfully.
+              schema:
+                $ref: "#/definitions/RemoveCartItemOutput"
+            204:
+              description: |
+                *OK* - Items removed successfully. Cart Empty.
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+              
+      /shoppingCart/{shoppingCartId}/checkout:
+        post:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartCheckout
+          tags:
+          - "ShoppingCart"
+          operationId: checkout
+          description: |
+            Task to remove root cart item with its included cart items.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"            
+            - $ref: "#/parameters/path-shoppingCartId"      
+          responses:
+            200:
+              description: |
+                *OK* - Checkout successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"   
+            409:
+              description: |
+                *Conflict* - Cart not valid.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+       
+      /shoppingCart:
+        get:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartRetrieve
+          tags:
+          - "ShoppingCart"
+          operationId: searchShoppingCart
+          description: |
+            Retrieve all shopping carts based on filter criteria.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"            
+            - $ref: "#/parameters/query-filter"
+            - $ref: "#/parameters/query-offset"
+            - $ref: "#/parameters/query-limit"
+          responses:
+            200:
+              description: |
+                *OK* - Retrieve shopping cart successful.
+              schema:
+                type: array
+                minItems: 0
+                items:
+                  $ref: "#/definitions/ShoppingCart"
+            206:
+              description: |
+                *OK* - Partial Content.
+              schema:
+                type: array
+                minItems: 0
+                items:
+                  $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+        post:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartCreate
+          tags:
+          - "ShoppingCart"
+          operationId: createShoppingCart
+          description: |
+            Retrieve all shopping carts based on filter criteria.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"            
+            - name: createShoppingCartInput
+              in: body
+              description: "Details of the cart to be created"
+              required: true
+              schema:
+                $ref: "#/definitions/CreateShoppingCartInput"              
+          responses:
+            200:
+              description: |
+                *OK* - Create shopping cart successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+      
+      /shoppingCart/{shoppingCartId}:
+        get:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartRetrieve
+          tags:
+          - "ShoppingCart"
+          operationId: retrieveShoppingCartDetails
+          description: |
+            Retrieve specific shopping cart resource by ID
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"            
+            - $ref: "#/parameters/path-shoppingCartId"      
+            - name: levelOfData
+              in: query
+              type: string
+              required: false
+              description: |
+                Parameter specifying the level of details to be retrieved. If not provided then all the data will be returned. id and href are always returned. If provided then depending of value provided the data will be retrieved. Multiple values can be supplied for this parameter using the comma separator. Supported values are: 
+                * __default__ (when no value is sent for levelOfData) - returns all fields
+                * __shoppingCart__ - returns cart,cartToalPrice, customer, contactMedium, cartItem entities (with no cartValidation)
+                * __cartValidation__ - returns cart, cartValidation entities            
+          responses:
+            200:
+              description: |
+                *OK* - Retrieve shopping cart details successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            409: 
+              $ref: "#/responses/409-Conflict"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+               
+        delete:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartUpdate
+          tags:
+          - "ShoppingCart"
+          operationId: deleteShoppingCart
+          description: |
+            Retrieve specific shopping cart resource by ID
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"            
+            - $ref: "#/parameters/path-shoppingCartId"                 
+          responses:
+            200:
+              description: |
+                *OK* - Retrieve shopping cart details successful.
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            403:
+              $ref: "#/responses/403-Forbidden"  
+            404:
+              $ref: "#/responses/404-NotFound"     
+            409: 
+              $ref: "#/responses/409-Conflict"              
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+               
+      /shoppingCart/{shoppingCartId}/associateCustomer:
+        post:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartUpdate
+          tags:
+          - "ShoppingCart"
+          operationId: associateCustomer
+          description: |
+            Task to associate cart to customer.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel" 
+            - $ref: "#/parameters/path-shoppingCartId"
+            - name: associateCustomerInput
+              in: body
+              description: "Input containing Customer Id to be associated with anonymous shopping cart."
+              required: true
+              schema:
+                $ref: "#/definitions/AssociateCustomerInput"
+          responses:
+            200:
+              description: |
+                *OK* - Association of customer and eligibility check successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+              
+      /shoppingCart/merge:
+        post:       
+          tags:
+          - "ShoppingCart"
+          operationId: merge
+          description: |
+            Task to merge two given shopping Carts.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - name: mergeShoppingCart
+              in: body
+              description: "Cart details to be merged."
+              required: true
+              schema:
+                $ref: "#/definitions/MergeShoppingCartInput"
+          responses:
+            200:
+              description: |
+                *OK* - Merging of carts successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"  
+              
+      /shoppingCart/{shoppingCartId}/modifyPhoneNumberProduct:
+        post:
+          tags:
+            - ShoppingCart
+          operationId: modifyPhoneNumberProduct
+          description: >
+            This task modifies the information on phoneNumberProduct within the
+            mobileCartItem. Information including MSISDN, and port in information.
+            in case of new number isPortIn = No. 
+    
+            The replaced MSISDN (if not port in number e.g. isPortIn=false) is
+            released from resource management. The operation finally retrieves the
+            specific shopping cart resource by ID.
+          parameters:
+            - $ref: '#/parameters/header-locale'
+            - $ref: '#/parameters/query-salesChannel'
+            - $ref: '#/parameters/path-shoppingCartId'
+            - name: modifyPhoneNumberProductInput
+              in: body
+              description: |
+    
+                The mobile cart item id and the Phone Number to be associated with
+                the mobileCartItem within the shopping cart.
+              required: true
+              schema:
+                $ref: '#/definitions/ModifyPhoneNumberProductInput'
+          responses:
+            200:
+              description: |
+                *OK* - Retrieve shopping cart details successful.
+              schema:
+                $ref: '#/definitions/ShoppingCart'
+            400:
+              $ref: '#/responses/400-BadRequest'
+            401:
+              $ref: '#/responses/401-Unauthorized'
+            404:
+              $ref: '#/responses/404-NotFound'
+            500:
+              $ref: '#/responses/500-InternalServerError'
+            default:
+              $ref: '#/responses/500-InternalServerError'
+              
+      /shoppingCart/{shoppingCartId}/mobileCartItem/{mobileCartItemId}:
+        patch:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartUpdate
+          tags:
+          - "ShoppingCart"
+          operationId: patchMobileCartItem
+          description: |
+            This task modifies the information on mobileCartItem. For example adding or changing the V1MobileDeviceCartItem or adding new V1MobileAddOnCartItem.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel" 
+            - $ref: "#/parameters/path-shoppingCartId"
+            - $ref: "#/parameters/path-mobileCartItemId"
+            - name: mobileCartItemPatch
+              in: body
+              description: The Resource's updated details
+              required: true
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/PatchElement"
+          responses:
+            200:
+              description: |
+                *OK* - Retrieve modified shopping cart details successful.
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+     
+      /shoppingCart/{shoppingCartId}/associateEmailAddress:
+         post:
+          tags:
+          - "ShoppingCart"
+          operationId: associateEmailAddress
+          description: |
+            Saves the contactMedium i.e. email Address on cart for anonymous
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - $ref: "#/parameters/path-shoppingCartId"
+            - name: associateEmailAddressInput
+              in: body
+              required: true
+              schema:
+                $ref: "#/definitions/AssociateEmailAddressInput"            
+          responses:
+            200:
+              description: |
+                *OK* - Email address saved successfully.
+              schema:
+                $ref: "#/definitions/AssociateEmailAddressOutput"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+      /shoppingCart/{shoppingCartId}/sendEmailNotification:
+         post:
+          tags:
+          - "ShoppingCart"
+          operationId: sendEmailNotification
+          description: |
+            Send email when the cart is saved to the email address which was used to save the address.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - $ref: "#/parameters/path-shoppingCartId"
+          responses:
+            200:
+              description: |
+                *OK* - Email initiated successfully.
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+              
+      /shoppingCart/{shoppingCartId}/resume:
+        post:
+          tags:
+          - "ShoppingCart"
+          operationId: resumeCart
+          description: |
+            Takeover and resume Shopping cart in assisted channel
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - $ref: "#/parameters/path-shoppingCartId"                  
+          responses:
+            200:
+              description: |
+                *OK* - Resume operation successful
+              schema:
+                $ref: "#/definitions/ShoppingCart"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            403:
+              $ref: "#/responses/403-Forbidden"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+      
+      /shoppingCart/{shoppingCartId}/addMobileCartItemForReplace:
+        post:
+          x-amdocs:
+            public-roles:
+              - ShoppingCartUpdate
+          tags:
+          - "ShoppingCart"
+          operationId: addMobileCartItemForReplace
+          description: |
+            This service supports creating the cart items corresponding to the replace activity for replacing the existing mobile offering with the compatible target mobile offering.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - $ref: "#/parameters/path-shoppingCartId"  
+            - name: addMobileCartItemForReplaceInput
+              in: body
+              required: true
+              schema:
+                $ref: "#/definitions/AddMobileCartItemForReplaceInput"       
+          responses:
+            200:
+              description: |
+                *OK* - Add Mobile Cart Item Successful.
+              schema:
+                $ref: "#/definitions/AddMobileCartItemForReplaceOutput"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"                      
+      /shoppingCart/{shoppingCartId}/checkOfferQualification:
+        post:
+          x-dox-Since: v10.2
+          tags:
+            - "ShoppingCart"
+          operationId: checkOfferQualification
+          description: |
+            This is the task to perform the eligibility checks for the offers in the cart for the customer (or anonymous) and for the sales channel that is making the request.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - $ref: "#/parameters/path-shoppingCartId"
+          responses:
+            200:
+              description: |
+                *OK* - Offer Qualifications checks successful.
+              schema:
+                $ref: "#/definitions/CartValidation"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            401:
+              $ref: "#/responses/401-Unauthorized"
+            404:
+              $ref: "#/responses/404-NotFound"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+    
+      /shoppingCart/{shoppingCartId}/takeOver:
+        post:
+          x-dox-Since: v10.2
+          tags:
+            - "ShoppingCart"
+          operationId: takeOverCart
+          description: |
+            This operation will allow the consumer to perform the multi-channel take over of the order so that the purchase/changes can continue in the sales channel requesting the cart take over.
+          parameters:
+            - $ref: "#/parameters/header-locale"
+            - $ref: "#/parameters/query-salesChannel"
+            - $ref: "#/parameters/path-shoppingCartId"
+          responses:
+            200:
+              description: |
+                *OK* - Order take over successful.
+              schema:
+                $ref: "#/definitions/TakeOverOutput"
+            400:
+              $ref: "#/responses/400-BadRequest"
+            409:
+              $ref: "#/responses/409-Conflict"
+            500:
+              $ref: "#/responses/500-InternalServerError"
+            default:
+              $ref: "#/responses/500-InternalServerError"
+    #
+    # Parameters
+    #
+    parameters:
+
+    #
+    # IDs of items in the path
+    #
+
+      path-shoppingCartId:
+        x-dox-Since: v10.2
+        name: shoppingCartId
+        in: path
+        description: |
+          The ID of the Shopping Cart
+        required: true
+        type: string
+        
+      path-mobileCartItemId:
+        x-dox-Since: v10.2
+        name: mobileCartItemId
+        in: path
+        description: |
+          The ID of the Shopping Cart
+        required: true
+        type: string  
+
+      path-accessoryCartItemId:
+        x-dox-Since: v10.2
+        name: accessoryCartItemId
+        in: path
+        description: |
+          The ID of the Accessory Cart Item
+        required: true
+        type: string
+        
+      path-mobileDeviceCartItemId:
+        x-dox-Since: v10.2
+        name: mobileDeviceCartItemId
+        in: path
+        description: |
+          The ID of the Mobile Device Cart Item
+        required: true
+        type: string
+
+    #
+    # Standard Amdocs REST query parameters
+    #
+      
+      
+      header-locale:
+        x-dox-Since: v10.2
+        name: Accept-Language
+        in: header
+        description: |
+          client's locale
+        type: string
+
+      query-salesChannel:
+        x-dox-Since: v10.2
+        name: salesChannel
+        in: query
+        description: |
+          Sales Channel
+        required: false
+        type: string
+        
+      query-filter:
+        x-dox-Since: v10.2
+        name: filters
+        in: query
+        description: |
+          parameter to specify the filter query parameter. 
+        required: true
+        type: string
+          
+      query-offset:
+        x-dox-Since: v10.2
+        name: offset
+        in: query
+        description: |
+          Requested index for start of resources to be provided in response requested by client
+        required: false
+        type: integer
+        format: int32
+        
+      query-limit:
+        x-dox-Since: v10.2
+        name: limit
+        in: query
+        description: |
+          Requested number of resources to be provided in response requested by client
+        required: false
+        type: integer
+        format: int32
+      
+    #
+    # Definitions
+    #
+    definitions:
+    #
+    # Input-Output 
+    #
+    
+      CreateShoppingCartInput:
+        description: |
+          Representation of the input to the create the cart .
+        type: object
+        properties:
+          shoppingCart:
+            $ref: "#/definitions/ShoppingCart"
+          qualificationCriteria:
+            $ref: "#/definitions/QualificationCriteria"
+    
+      AddMobileCartItemInput:
+        description: |
+          Representation of the input to the add a cart item.
+        type: object
+        properties:
+          mobileCartItem:
+            $ref: "#/definitions/V1MobileCartItem"
+          qualificationCriteria:
+            $ref: "#/definitions/QualificationCriteria"
+            
+      AddMobileCartItemOutput:
+        description: |
+          Representation of the output of add cart item operation.
+        type: object
+        properties:
+          addedMobileCartItem:
+            type: string
+          shoppingCart:
+            $ref: "#/definitions/ShoppingCart"
+            
+      AddMobileCartItemForReplaceOutput:
+        description: |
+          Representation of the output of add cart item operation.
+        type: object
+        properties:
+          addedMobileCartItem:
+            type: string
+          shoppingCart:
+            $ref: "#/definitions/ShoppingCart"
+            
+      AddMobileDeviceCartItemInput:
+        description: |
+          Representation of the input to the add a mobile device cart item.
+        type: object
+        properties:
+          mobileDeviceCartItem:
+            $ref: "#/definitions/V1MobileDeviceCartItem"
+          
+            
+      AddMobileDeviceCartItemOutput:
+        description: |
+          Representation of the output of add mobile device cart item operation.
+        type: object
+        properties:
+          addedMobileDeviceCartItem:
+            type: string
+          shoppingCart:
+            $ref: "#/definitions/ShoppingCart"
+            
+      RemoveCartItemInput:
+        x-dox-Since: 10.2
+        description: |
+          Representation of input of removeCartItem operation.
+        type: object
+        properties:
+          cartItemId:
+            type: array
+            description: |
+              List of Cart Item Ids to be removed.
+            minItems: 0
+            items:
+              type: string
+      
+      RemoveCartItemOutput:
+        description: |
+          Representation of the input to the add a cart item.
+        type: object
+        properties:
+          removedCartItem:
+            type: array
+            items:
+              type: string
+          shoppingCart:
+            $ref: "#/definitions/ShoppingCart"
+            
+      MergeShoppingCartInput:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the input to merge shopping cart .
+        type: object
+        properties:
+          mergeFromShoppingCart:
+            $ref: "#/definitions/MergeFromShoppingCart"
+          mergeToShoppingCart:
+            $ref: "#/definitions/MergeToShoppingCart"
+      
+      MergeFromShoppingCart:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the input of shopping cart which will be merged.
+        type: object
+        properties:
+          shoppingCartId:
+            type: string
+            description: |
+              Cart id to merge from
+          customerId:
+            type: string
+            description: |
+              Customer id
+      
+      MergeToShoppingCart:
+        x-dox-Since: 10.2
+        description: |
+          Representation of input of resultant shopping cart containing merged items.
+        type: object
+        properties:
+          shoppingCartId:
+            type: string
+            description: |
+              Cart id to merge to
+          customerId:
+            type: string
+            description: |
+              Customer id
+          mobileCartItem:
+            $ref: "#/definitions/V1MobileCartItem"
+      
+      AssociateCustomerInput:
+        x-dox-Since: 10.2
+        description: |
+          Representation of input of associateCustomer operation.
+        type: object
+        properties:
+          customerId:
+            type: string
+            description: |
+              Customer Id to be associated with anonymous shopping cart.        
+      PatchElement:
+        x-dox-Since: v10.2
+        type: object
+        description: |
+          The 'PatchElement' object
+        properties:
+          op:
+            description: |
+              The operation of this 'PatchElement' 
+            type: string
+            enum: 
+            - add
+            - remove
+            - replace
+            - move
+            - copy
+            - test
+          path:
+            type: string
+            description: |
+              The path of this 'PatchElement' (e.g. '/status' or '/notes' or '/name' or '/activationStatus' or 
+              '/description')
+          value:
+            description: |
+              The value of this 'PatchElement'
+            type: object
+      
+      PatchDocument: 
+        description: |
+          A JSONPatch document as defined by RFC 6902 
+        required:
+         - "op"
+         - "path"
+        properties: 
+         op: 
+          type: string 
+          description: |
+            The operation to be performed 
+          enum:
+           - "add"
+           - "remove"
+           - "replace"
+         path: 
+          type: string 
+          description: A JSON-Pointer 
+         value: 
+          type: object 
+          description: |
+            The value to be used within the operations.
+         from: 
+          type: string 
+          description: |
+            A string containing a JSON Pointer value.
+            
+      QualificationCriteria:
+        x-dox-Since: 10.2
+        properties:
+          customer:
+            $ref: "#/definitions/CustomerRef"
+          orderingActivity:
+            type: string
+            
+      AssociateEmailAddressInput:
+        description: |
+          Representation of the input to the save e-mail address to cart operation.
+        type: object
+        properties:
+          emailAddress:
+            type: string           
+       
+      AssociateEmailAddressOutput:
+        description: |
+          Representation of the output of the save e-mail address to cart operation.
+        type: object
+        properties:
+          shoppingCartId:
+            type: string
+      
+      AddMobileCartItemForReplaceInput:
+        description: |
+          Representation of the input to the replace mobile cart item operation.
+        type: object
+        properties:
+          replaceFromMobileCartItem:
+            $ref: "#/definitions/V1MobileCartItem"     
+          replaceToMobileCartItem:
+            $ref: "#/definitions/V1MobileCartItem"
+      TakeOverOutput:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the output of take over operations
+        type: object
+        properties:
+          status:
+            type: string
+            description: |
+              Status of the operation. Success - when the takeover is successful. Failure - When the take over failed.
+            enum:
+            - success
+            - failure
+
+
+
+      #
+      # Accessory Offering Definitions
+      #
+      AccessoryOffering:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        x-dox-enriched-attribute-without-dependency: enhancedDesc
+        x-dox-enriched-attachments-attribute: attachmentMap
+        description: |
+          The offering for the mobile device
+        type: object
+        allOf:
+        - $ref: "#/definitions/Offering" #inheritance
+        - type: object
+          properties:
+            hasVariantGroup:
+              description: |
+                Indicates whether the offer is part of the variant group
+              type: boolean
+            stockAvailabilityQuantity:
+              type: integer
+              description: |
+                The quantity available in the inventory stock for this offer, when quantity is set to 0 it means out of stock, and when quantity is greater than 0 it means in stock.
+                The quantity refers to the store in context (for example, for eShop, the store is equal to virtual).
+            calculateVariantGroupInformation:
+              description: |
+                Indicates whether to calculate the variant group information, relevant only when hasVariantGroup is set to true. In the search REST service, it is populated only if groupByVariantGroup is set to true, and the information includes only variant items that are applicable to the search criteria. In the REST by ID service, it contains the information of all the items in the group.
+              $ref: "#/definitions/VariantGroupItemsInformation"
+            variantGroupOffering:
+              type: array
+              description: |
+                The list of all offers related to the same variant group (for example, iPhone 7)
+              minItems: 0
+              items:
+                $ref: "#/definitions/OfferingRef"
+            productSpecification:
+              $ref: "#/definitions/ProductSpecificationRef"
+            availableDeliveryMethod:
+              type: array
+              description: |
+                The list of all available delivery methods
+              minItems: 0
+              items:
+                $ref: "#/definitions/DeliveryMethod"
+
+
+      #
+      # Accessory Specification
+      #
+
+      AccessorySpecification:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        description: |
+          The specification for accessories
+        type: object
+        allOf:
+        - $ref: "#/definitions/PhysicalGoodSpecification"
+        - type: object
+          properties:
+            manufacturer:
+              description: |
+                The operating system of the device
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            variantGroup:
+              $ref: "#/definitions/VariantGroupInformation"
+
+    #
+    # Offering
+    #
+      
+            
+      OfferingRef:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the offering reference
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          discriminator: type
+          required:
+          - type
+          - id 
+          - name
+          properties:
+            id:
+              description: |
+                Unique identification of the offering
+              type: string
+            type:
+              $ref: "#/definitions/OfferingType"
+            name:
+              description: |
+                Text identifier of the mobile offering.
+              type: string
+            
+      Offering: 
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        x-dox-enriched-attribute-without-dependency: enhancedDesc
+        x-dox-enriched-attachments-attribute: attachmentMap
+        description: |
+          Base Offering structure. Extended by different types of Offering like MobileOffering, MobilePlanOffering etc.
+        type: object
+        allOf:
+        - $ref: "#/definitions/OfferingRef"
+        - type: object
+          discriminator: type
+          properties:
+            displayName:
+              description: |
+                Localized offering name.
+              type: string
+            description:
+              x-dox-enriched-attribute-without-dependency: enhancedDesc
+              description: |
+                The description of the offering. It should reflect the enriched data from AEM if exist.
+              type: string
+            isTopItem:
+              description: |
+                Indicates whether the item is marked as top from marketing perspective, typically will get priority when display a list of offering
+              type: boolean
+            isBundle:
+              description: |
+                Indicates whether the offer contains more than one line of business.
+              type: boolean
+            attachment:
+              x-dox-enriched-attachments-attribute: attachmentMap
+              description: |
+                The attachments that are defined for this offering, On the Offering level there should be at least attachment of type image and purpose overview. The detailed attachments will be usually on the product specification. The attachments should reflect the enriched data from AEM if exist.
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/Attachment"
+            offeringPrice:
+              type: array
+              minItems: 0
+              description: |
+                Different price types (recurring, oneTime) of this offering. Returns in case of fixed price
+              items:
+                $ref: "#/definitions/OfferingPrice"
+            category:
+              type: array
+              minItems: 0
+              description: |
+                List of references to the categories that this offering is associated with.
+              items:
+                $ref: "#/definitions/CategoryRef"
+            descriptiveCharacteristic:
+              type: array
+              description: |
+                Marketing descriptive information on the offer.
+              minItems: 0
+              items:
+                $ref: "#/definitions/DescriptiveCharacteristic" 
+            commitment:
+              type: "array"
+              minLength: 0
+              items:
+                $ref: "#/definitions/CommitmentTerm"  
+      
+      CommitmentTerm:
+        x-dox-Since: 10.2
+        description: |
+          Commitment Term
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          displayName:
+            type: string
+          duration:
+            type: integer
+          unitOfMeasure:
+            type: string
+            description: |
+               The unit of measure of this value (UN/CEFACT Common codes). In case of MONETARY value it will contain the currency code in ISO code). Supported values are -
+               - 2P ( kilobyte )
+               - 4L ( megabyte )
+               - E34 ( gigabyte )
+               - WEE ( week )
+               - MON ( month )
+               - ANN ( year )
+               - SEC ( second [unit of time] )
+               - MIN ( minute [unit of time] )
+               - HUR ( hour )
+               - DAY ( day )
+               - C26 ( millisecond ) 
+          isDefault: 
+            type: boolean
+                                  
+      OfferingPrice:
+        x-dox-Since: 10.2
+        description: |
+          Offering Price information including the type of a price (e.g. Recurring, oneTime), price amount discounts and optionally price options
+        type: object
+        properties:
+          type:
+            $ref: "#/definitions/PriceType"
+          recurringChargePeriod: 
+            description: |
+              In case of recurring price, specify the recurring period. valid values: "month", "biMonth".
+            $ref: "#/definitions/RecurringChargePeriod"
+          usageUnitOfMeasure:
+            description: |
+              In case of usage or allowance price will specify the unit of measure of the usage volume. For example for usage price of 3$ for a minute, the volume is 1, unit of measure is minutes and price is 3$. for 5GB allowance price, the volume is 5, unit of measure is GB and no price is attached.
+            type: string
+          usageVolume:
+            type: number
+            format: double
+          name:
+            description: |
+              Text identifier of the price
+            type: string
+          displayName:
+            description: |
+              Localized price name. 
+            type: string
+          description:
+            description: |
+              Localized price description
+            type: string     
+          price:
+            $ref: "#/definitions/Price"
+          priceOption:            
+              $ref: "#/definitions/PriceOption"
+          discount:
+            type: array
+            minItems: 0
+            items:
+              $ref: "#/definitions/Discount"
+      
+      CategoryRef:
+        x-dox-Since: 10.2
+        description: |
+          Reference to browsing category
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          properties:
+            id:
+              description: |
+                The unique identification of the category
+              type: string
+            name:
+              type: string
+                         
+    #
+    # Mobile Device Offering
+    #    
+    
+      MobileDeviceOffering:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        x-dox-enriched-attribute-without-dependency: enhancedDesc
+        x-dox-enriched-attachments-attribute: attachmentMap
+        description: |
+          Representation of the offering for mobile devices
+        type: object
+        allOf:
+          - $ref: "#/definitions/Offering" #inheritance
+          - type: object
+            properties:
+              hasVariantGroup:
+                description: |
+                  Indicate if the Offer is part of variant group.
+                type: boolean
+              rank:
+                description: | 
+                  Rank specify the classification of the device
+                type: integer
+              stockAvailabilityQuantity:
+                type: integer
+                description: |
+                  The quantity available in stock inventory for this offer. stockAvailableQuantity = 0 means OutOfStock. stockAvailableQuantity >0 means inStock.
+                  The quantity referring to store in context (e.g. for eShop the store = virtual).
+              calculateVariantGroupInformation:
+                description: |
+                  Relevant only if hasVariantGroup is true. In the search REST, it will be populated only if groupByVariantGroup is true and the information will include only variant items that are applicable to the search criteria. In the REST by id, it will contain the information of all the items in the group.
+                $ref: "#/definitions/VariantGroupItemsInformation"
+              bundledInOffering:
+                type: array
+                description: |
+                  List of bundles that this mobile device offering is bundled in.
+                minItems: 0
+                items:
+                  $ref: "#/definitions/OfferingRef"
+              variantGroupOffering:
+                type: array
+                description: |
+                  List of all offers related to same variant group (e.g. iPhone 7
+                minItems: 0
+                items:
+                  $ref: "#/definitions/OfferingRef" 
+              productSpecification:
+                $ref: "#/definitions/ProductSpecificationRef"
+              availableDeliveryMethod:
+                type: array
+                description: |
+                  List of all available delivery methods.
+                minItems: 0
+                items:
+                  $ref: "#/definitions/DeliveryMethod"
+              isSellable:
+                type: boolean
+                description: | 
+                  Indicates how this device can be sold , i.e if the value is true , then it can be sold StandAlone and its standalone price will be populated, if false then it can be only sold along with plan(bundle) and standalone price will not be populated
+            
+                
+      VariantGroupItemsInformation:
+        x-dox-Since: 10.2
+        description: |
+          The relevant variant group Information according to the devices that match the filter criteria.
+        type: object
+        allOf:
+        - $ref: "#/definitions/VariantGroupInformation" #inheritance
+        - type: object
+          properties:
+            variantItem:
+              description: |
+                The information of the variant characteristics for each offer that match the filter criteria.
+              type: array
+              minItems: 1
+              items:
+                $ref: "#/definitions/VariantItem"
+            stockAvailiblityStatus:
+              $ref: "#/definitions/StockAvailabilityStatus"
+      
+      VariantItem:
+        x-dox-Since: 10.2
+        description: |
+          Holds the variant characteristic values for each item in the variant group.
+        type: object
+        properties:
+          characteristic:
+            type: array
+            minItems: 1
+            items:
+              $ref: "#/definitions/VariantItemCharacteristic"
+          offerId:
+            description: |
+              The offerId of this item.
+            type: string
+          isDefault:
+            description: |
+              Specify if this item is the default item in the group
+            type: boolean
+          attachment:
+            type: array
+            minItems: 0
+            items:
+              $ref: "#/definitions/Attachment"            
+                
+  
+    #
+    # Mobile Offering
+    #
+      MobileOffering:
+        x-dox-Since: 10.2
+        description: |
+          Offering for mobile offering containing plan with optional Device, SIM and AddOn.
+        allOf:
+        - $ref: "#/definitions/Offering" #inheritance
+        - type: object
+          properties:
+            paymentManagementType:
+              $ref: "#/definitions/PaymentManagementType"
+            simDeviceCombination:
+              $ref: "#/definitions/SimDeviceCombinationType"
+            plan:
+              $ref: "#/definitions/MobilePlanOffering"
+            deviceReleshenshipGroup:
+              $ref: "#/definitions/DeviceRelationshipGroup"
+            sim:
+              $ref: "#/definitions/OfferingRef"
+            addOn:
+              type: array
+              minLength: 0
+              items:
+                $ref: "#/definitions/BundledAddOn"
+              
+      BundledAddOn:
+        x-dox-Since: 10.2
+        properties:
+          id:
+            type: string
+          href:
+            type: string
+          type:
+            type: string
+          minCardinality:
+            type: integer
+          maxCardinality:
+            type: integer
+            
+      DeviceRelationshipGroup:
+        x-dox-Since: 10.2
+        properties:
+          minCardinality:
+            type: integer
+          maxCardinality:
+            type: integer
+          type:
+            $ref: "#/definitions/DeviceRelationshipType"
+          device:
+            type: "array"
+            minLength: 0
+            items:
+              $ref: "#/definitions/OfferingRef"
+    #
+    # Mobile Plan Offering
+    #
+      MobilePlanOffering:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        x-dox-enriched-attribute-without-dependency: enhancedDesc
+        x-dox-enriched-attachments-attribute: attachmentMap
+        description: |
+          Extend the offering resource and represent the offering for mobile plan, contains the commitment , price options and reference to plan specification
+        type: object
+        allOf:
+        - $ref: "#/definitions/Offering"
+        - type: object
+          properties:   
+            paymentManagementType:
+              $ref: "#/definitions/PaymentManagementType"
+            rank:
+              type: string
+            productSpecification:
+              $ref: "#/definitions/ProductSpecificationRef"
+    
+    #
+    # Mobile SIM Offering
+    #
+      MobileSimOffering:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        x-dox-enriched-attribute-without-dependency: enhancedDesc
+        x-dox-enriched-attachments-attribute: attachmentMap
+        description: |
+          Extend the offering resource and represent the offering for mobile plan, contains the commitment , price options and reference to plan specification
+        type: object
+        allOf:
+        - $ref: "#/definitions/Offering"
+        - type: object
+          properties:
+            availableDeliveryMethod:
+              type: array
+              description: |
+                List of all available delivery methods.
+              minItems: 0
+              items:
+                $ref: "#/definitions/DeliveryMethod"
+       
+    #
+    # Mobile AddOn Offering
+    #
+      MobileAddOnOffering:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        x-dox-enriched-attribute-without-dependency: enhancedDesc
+        x-dox-enriched-attachments-attribute: attachmentMap
+        description: |
+          Extend the offering resource and represent the offering for mobile plan, contains the commitment , price options and reference to plan specification
+        type: object
+        allOf:
+        - $ref: "#/definitions/Offering"
+         
+    #
+    # Product Specification
+    #
+    
+      ProductSpecificationRef:
+        x-dox-Since: 10.2
+        description: |
+          Reference to the product specification.
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          required: 
+          - id
+          - name
+          - type
+          discriminator: type
+          properties:
+            id:
+              description: |
+                The unique identification of the product specification
+              type: string
+            name:
+              description: |
+                Text identifier of the Product Specification (code).
+              type: string
+            type:
+              description: |
+                Type of the Product Specification.
+              $ref: "#/definitions/ProductSpecificationType"
+    
+      ProductSpecification:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        x-dox-enriched-attribute-without-dependency: enhancedDesc
+        x-dox-enriched-attachments-attribute: attachmentMap
+        description: |
+          The representation of the Product Specification.
+        allOf:
+        - $ref: "#/definitions/ProductSpecificationRef"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            displayName:
+              type: string
+              description: |
+                Localized name of the Product Specification.
+            description:
+              x-dox-enriched-attribute-without-dependency: enhancedDesc
+              type: string
+              description: |
+                Product Specification description
+            bundledProductSpec:
+              type: array
+              minItems: 0
+              description: |
+                Product specifications that are included in this product specification.
+              items:
+                $ref: "#/definitions/ProductSpecification"
+            attachment:
+              x-dox-enriched-attachments-attribute: attachmentMap
+              type: array
+              minItems: 0
+              description: |
+                URLs for static resources (images, descriptive page) that are related to this specification. 
+              items:
+                $ref: "#/definitions/Attachment"
+            descriptiveCharacteristic:
+                type: array
+                minItems: 0
+                description: |
+                  Non configurable characteristics, describes the product.
+                items:
+                  $ref: "#/definitions/DescriptiveCharacteristic"
+            configurableCharacteristic:
+              type: array
+              minItems: 0
+              description: |
+                Configurable Characteristics that can be configured by the user. minCardinality > 0 indicate this characteristic is mandatory
+              items:
+                $ref: "#/definitions/ProductSpecCharacteristic"
+               
+      PhysicalGoodSpecification:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        description: |
+          The representation of the Specification for physical goods. 
+        type: object
+        allOf:
+        - $ref: "#/definitions/ProductSpecification"
+        - type: object
+          properties:
+            sku:
+              type: string
+              description: |
+                SKU Stock Keeping Unit.
+            color:
+              description: |
+                Color of the physical good
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            brand:
+              description: |
+                Brand of the physical good
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            depth:
+              description: |
+                Depth of the physical good
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            width:
+              description: |
+                Width of the physical good
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            height:
+              description: |
+                Height of the physical good
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            weight:
+              description: |
+                Weight of the physical good
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            size:
+              description: |
+                Size of the physical good
+              $ref: "#/definitions/CharacteristicNameAndValue"
+      
+      ProductSpecCharacteristic:
+        x-dox-Since: 10.2
+        description: |
+          A logical grouping of characteristic, typically will display together
+        type: object
+        properties:
+          id: 
+            type: string
+            description: |
+              ID of the Characteristic
+          name:
+            type: string
+            description: |
+              Name of the Characteristic
+          displayName:
+            type: string
+            description: |
+              Localized name of the Characteristic
+          type: 
+            $ref: "#/definitions/CharacteristicType"
+          valueType:
+            $ref: "#/definitions/ValueType"
+          minCardinality:
+            type: integer
+            description: |
+              Cardinality - Minimum Value
+          maxCardinality:
+            type: integer
+            description: |
+              Cardinality - Maximum Value         
+          value: 
+            type: array
+            minItems: 0
+            items: 
+              $ref: "#/definitions/ProductSpecCharacteristicValue"
+          group:
+            $ref: "#/definitions/CharacteristicGroup"
+            
+      ProductSpecCharacteristicValue:
+        x-dox-Since: 10.2
+        description: |
+          A logical grouping of characteristic, typically will display together
+        type: object
+        properties:
+          type:
+            $ref: "#/definitions/ValueType"
+          default: 
+            type: boolean
+            description: |
+              True if this value is the default value which was defined in the catalog for the characteristic
+          value: 
+            type: string
+            description: |
+              Characteristic value.
+          displayValue: 
+            type: string
+            description: |
+              localized Characteristic value.
+          valueFrom : 
+            type: string
+            description: |
+              Applicable only in case of range filter. Represents the lower limit of this value
+          valueTo : 
+            type: string
+            description: |
+              Applicable only in case of range filter. Represents the upper limit of this value
+          unitOfMeasure: 
+            type: string
+            description: |
+               The unit of measure of this value (UN/CEFACT Common codes). In case of MONETARY value it will contain the currency code in ISO code). Supported values are -
+               - 2P ( kilobyte )
+               - 4L ( megabyte )
+               - E34 ( gigabyte )
+               - WEE ( week )
+               - MON ( month )
+               - ANN ( year )
+               - SEC ( second [unit of time] )
+               - MIN ( minute [unit of time] )
+               - HUR ( hour )
+               - DAY ( day )
+               - C26 ( millisecond )
+            
+    #
+    # Mobile Product Specification
+    #
+    
+      MobileDeviceSpecification:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        description: |
+          The representation of the Specification for Mobile Devices. 
+        type: object
+        allOf:
+        - $ref: "#/definitions/PhysicalGoodSpecification"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            imei:
+              type: string
+              description: |
+                The device imei need to be populated during the sale or the fulfillment
+            storage:
+              description: |
+                The memory storage of this device
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            operatingSystem:
+              description: |
+                The operating system of this device
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            manufacturer:
+              description: |
+                The operating system of this device
+              $ref: "#/definitions/CharacteristicNameAndValue"
+            variantOf:
+              $ref: "#/definitions/VariantGroupInformation"
+        
+     
+    #
+    # Mobile Plan Specification
+    #
+
+        
+      MessagingComunicationSpecification:
+        x-dox-Since: 10.2
+        description: |
+          Messaging Communication Specification
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            id: 
+              type: string
+            name:
+              type: string
+            
+      VoiceComunicationSpecification:
+        x-dox-Since: 10.2
+        description: |
+          Voice Communication Specification
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            id: 
+              type: string
+            name:
+              type: string
+              
+      DataComunicationSpecification:
+        x-dox-Since: 10.2
+        description: |
+          Data Communication Specification
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            id: 
+              type: string
+            name:
+              type: string
+
+      ModifyPhoneNumberProductInput:
+        x-dox-Since: 10.2
+        description: |
+          Modify Phone Number Product 
+        type: object
+        properties:
+          mobileCartitemId:
+            type: string
+          phoneNumberProduct:
+            $ref: '#/definitions/PhoneNumberProduct'              
+          oneTimePassword:
+            type: string             
+            
+      PhoneNumberProduct:
+        x-dox-Since: 10.2
+        description: |
+          Phone Number Product 
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productSpecification:
+              $ref: "#/definitions/PhoneNumberSpecificationRef"
+            msisdn:
+              type: string
+            isPortIn:
+              type: boolean
+            portInProvider:
+              type: string
+            portInRequestDate:
+              type: string
+              format: date
+            externalCustomerIdentifier:
+              type: string   
+      
+      PhoneNumberSpecificationRef:
+        x-dox-Since: 10.2
+        description: |
+          Phone Number Specification Reference 
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link" 
+        - type: object
+          required: 
+          - id
+          - name
+          properties:
+            id:
+              description: |
+                The unique identification of the PhoneNumber specification
+              type: string
+            name:
+              description: |
+                Text identifier of the PhoneNumber Specification (code).
+              type: string
+
+      MessagingComunicationProduct:
+        x-dox-Since: 10.2
+        description: |
+          Messaging Communication Product 
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productSpecification:
+              $ref: "#/definitions/MessegingComunicationSpecificationRef"
+            id:
+                type: string
+            name:
+                type: string
+         
+      MessegingComunicationSpecificationRef":
+        x-dox-Since: 10.2
+        description: |
+          Messaging Specification Reference 
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link" 
+        - type: object
+          required: 
+          - id
+          - name
+          properties:
+            id:
+              description: |
+                The unique identification of the Messaging specification
+              type: string
+            name:
+              description: |
+                Text identifier of the Messaging Specification (code).
+              type: string
+          
+      VoiceComunicationProduct:
+        x-dox-Since: 10.2
+        description: |
+          Voice Communication Product
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productSpecification:
+              $ref: "#/definitions/VoiceComunicationSpecificationRef"
+            id:
+                type: string
+            name:
+                type: string
+                
+      VoiceComunicationSpecificationRef":
+        x-dox-Since: 10.2
+        description: |
+          Voice Specification Reference 
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link" 
+        - type: object
+          required: 
+          - id
+          - name
+          properties:
+            id:
+              description: |
+                The unique identification of the Voice specification
+              type: string
+            name:
+              description: |
+                Text identifier of the Voice Specification (code).
+              type: string
+      
+      DataComunicationProduct:
+        x-dox-Since: 10.2
+        description: |
+          Data Communication Product
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productSpecification:
+              $ref: "#/definitions/DataCommunicationSpecificationRef"
+            id:
+                type: string
+            name:
+                type: string
+                
+      DataCommunicationSpecificationRef":
+        x-dox-Since: 10.2
+        description: |
+          Data Specification Reference 
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link" 
+        - type: object
+          required: 
+          - id
+          - name
+          properties:
+            id:
+              description: |
+                The unique identification of the Data specification
+              type: string
+            name:
+              description: |
+                Text identifier of the Data Specification (code).
+              type: string
+              
+    #
+    # Mobile Sim Specification
+    #
+      MobileSimSpecification:
+       x-dox-Since: 10.2
+       x-dox-enriched-object: id
+       description: |
+         The representation of the Specification for Mobile Sim. 
+       type: object
+       allOf:
+       - $ref: "#/definitions/ProductSpecification" #inheritance
+       - type: object
+         discriminator: type
+         required: 
+         - type
+    
+    #
+    # Mobile Add-on Specification
+    #
+      MobileAddOnSpecification:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        description: |
+          The representation of the Specification for Mobile add-ons. 
+        type: object
+        allOf:
+        - $ref: "#/definitions/ProductSpecification" #inheritance
+        - type: object
+          discriminator: type
+          required: 
+          - type
+    
+    # Order Model
+    #
+    
+      ShoppingCart:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the Order
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          properties:
+            id:
+              description: |
+                Identifier of an instance of the Resource Order. Required to be unique within the resource type. Used in URIs as the identifier for specific instances of a type.
+              type: string            
+            customer:
+              $ref: "#/definitions/CustomerRef"
+            validFor:
+              $ref: "#/definitions/TimePeriod"
+            isLocked:
+              type: boolean
+              description: |
+                This is a computed field (can't be sent as an input field, it's output of the REST after calculation). It will be true in case the cart is locked (can't be edited) for the user that requests the cart due to business rules. for example user from self service channel can't edit the cart if the cart is locked by assistant channel (call center).
+            cartTotalPrice:
+              type: array
+              description: |
+                List of order total prices like one time, recurring etc.
+              minItems: 0
+              items:
+                $ref: "#/definitions/CartPrice"
+            cartItem:
+              type: array
+              minItems: 1
+              items:
+                $ref: "#/definitions/CartItem"
+            order:
+              $ref: "#/definitions/OrderRef"
+            contactMedium:
+              $ref: "#/definitions/ContactMedium"
+            currentChannel:
+              $ref: "#/definitions/ChannelType"
+            originalChannel:
+              $ref: "#/definitions/ChannelType"
+            cartValidation:              
+              $ref: "#/definitions/CartValidation"
+          example:
+            id: 12345            
+            isLocked: false
+            currentChannel: selfService
+            originalChannel: selfService
+            href: /commerce/v1/shoppingCart/12345
+      
+      TimePeriod:
+        x-dox-Since: 10.2
+        type: object
+        description: |
+          A base / value business entity used to represent a period of time between two timepoints.
+        properties:
+          endDateTime:
+            type: string
+            format: date-time
+            description: |
+              An instant of time, ending at the TimePeriod.
+          startDateTime:
+            type: string
+            format: date-time
+            description: |
+              An instant of time, starting at the TimePeriod
+        
+      ContactMedium:
+        x-dox-Since: 10.2
+        description: |
+          Represents contact medium such as postal address, email, phone
+        type: object
+        allOf:
+          - $ref: '#/definitions/Link'
+          - type: object
+            properties:
+              type:
+                $ref: '#/definitions/ContactMediumType'
+              preferred:
+                description: |
+                  indicates if its preferred medium
+                type: boolean
+              phoneNumber:
+                description: |
+                  phone number
+                type: string
+              emailAddress:
+                description: |
+                  email address
+                type: string
+              id:
+                type: string
+                description: |
+                  ID of address.  
+              city:
+                type: string
+                description: |
+                  City
+              country:
+                type: string
+                description: |
+                  Country name code value
+              displayCountry:
+                type: string
+                description: |
+                  Country name localized value
+              postalCode:
+                type: string
+                description: |
+                  postal code/pin
+              stateOrProvince:
+                type: string
+                description: |
+                  Code of the State or Province
+              displayStateOrProvince:
+                type: string
+                description: |
+                  display Name of the State or Province
+              street:
+                type: string
+                description: |
+                  Name of Street 
+              buildingNumber:
+                type: string
+                description: |
+                  Building Number
+              apartmentNumber:
+                type: string
+                description: |
+                  Apartment Number                          
+              floor:
+                type: string
+                description: |
+                  Floor of the postal address.    
+              formattedAddress1:
+                type: string
+                description: |
+                  First line of the formatted address.
+              formattedAddress2:
+                type: string
+                description: |
+                  Second line of the formatted address.
+              formattedAddress3:
+                type: string
+                description: |
+                  Third line of the formatted address.
+              latitude:
+                type: string
+                description: |
+                  Third line of the formatted address.
+              longitude:
+                type: string
+                description: |
+                  Third line of the formatted address.
+              addressStatus:
+                $ref: '#/definitions/AddressStatusType'
+              externalId:
+                type: string
+                description: |
+                  Identification number in external address management system.
+      AddressStatusType:
+            x-dox-Since: 10.2
+            description: |
+              Validation status as returned from the validation system
+            type: string
+            enum:
+              - unvalidated
+              - valid
+              - invalid
+              - obsolete
+              - validAmended
+      CartItem:
+        x-dox-Since: 10.2
+        description: |
+          An identified part of the order. An Order is decomposed into one or more order items.
+        type: object
+        discriminator: object_type
+        x-dox-discriminator-name: NAME
+        x-dox-discriminator-type: 
+          - V1MobileCartItem
+          - V1MobileDeviceCartItem
+          - V1MobilePlanCartItem
+          - V1AccessoryCartItem     
+        required:
+        - type        
+        properties:
+          id:
+            description: |
+              Unique identifier of the order item
+            type: string
+          type:
+            $ref: "#/definitions/CartItemType"
+          action:
+            $ref: "#/definitions/CartItemActionType"
+          quantity:
+            type: integer
+            format: int32
+          status:
+            $ref: "#/definitions/CartItemStatusType"
+          cartItem:
+            $ref: "#/definitions/CartItem"
+          itemPrice:
+            type: array
+            minItems: 1
+            items:
+              $ref: "#/definitions/CartPrice"
+          itemTotalPrice:
+            type: array
+            minItems: 1
+            items:
+              $ref: "#/definitions/CartPrice"
+          offering:
+            $ref: "#/definitions/Offering"
+          product:
+            $ref: "#/definitions/Product"
+          commitment:
+            $ref: "#/definitions/Commitment"
+          cartItemRelationship:
+            type: array
+            minItems: 0
+            items:            
+              $ref: "#/definitions/CartItemRelationship"
+          readOnly:
+            type:
+              boolean
+            description: |
+              Indicates if the cart item can change or not
+            
+      CartItemRelationship:
+        x-dox-Since: 10.2
+        description: |
+          Relationship among cart items mainly other than hierarchical relationships such as "RelyOn", "DependentOn", "Shipping" etc.
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          properties:
+            id:
+              type: string
+            type:
+              $ref: "#/definitions/CartItemRelationshipType"
+      
+      CartValidation:
+        x-dox-Since: 10.2
+        description: |
+          Contains validation status and validation messages for the cart.
+        type: object
+        properties:
+          status:
+            description: |
+              The validation status of the cart, the status will reflect the most severe status among the cart items. for example, status blocked means that at least one of the cart items is not valid. When status is blocked, the cart can't be checked out.
+            $ref: "#/definitions/CartValidationStatus"
+          cartItemValidation:
+            type: array
+            description: |
+              Validation status and messages for each root cart item. if cart item is in status success and there are no messages, it will not appear in the list.
+            minItems: 0
+            items:
+              $ref: "#/definitions/CartItemValidation"
+      
+      CartItemValidation:
+        x-dox-Since: 10.2
+        description: |
+          Contains validation status and validation messages for root cart item. 
+        type: object
+        properties:
+          status:
+            description: |
+              The validation status of the root cart item, the status will reflect the most severe status among the cart items under this root item.
+            $ref: "#/definitions/CartValidationStatus"
+          rootCartItemId:
+            type: string
+            description: |
+              The id of the root cart item which this status and messages are related to.
+          offeringDisplayName:
+            type: string
+            description: |
+              Offer Name
+          cartItemValidationMessage:
+            type: array
+            description: |
+              Validation status and messages for each cart item under this root cart item. there can be several messages for each cart item
+            minItems: 0
+            items:
+              $ref: "#/definitions/CartItemValidationMessage"
+              
+      CartItemValidationMessage:
+        x-dox-Since: 10.2
+        description: |
+          Contains validation message and status of cart item.
+        type: object
+        properties:
+          status:
+            description: | 
+              The validation status of the cart item
+            $ref: "#/definitions/CartValidationStatus"
+          cartItemId:
+            type: string
+            description: |
+              The id of the cart item.
+          message:
+            type: string
+            description: |
+                Cart item validation message
+          validationMessageType:
+            $ref: '#/definitions/ValidationMessageType'
+      
+      V1MobileCartItem:
+        x-dox-Since: 10.2
+        description: |
+          Order Item for Mobile product 
+        type: object        
+        allOf:
+        - $ref: "#/definitions/CartItem"   
+        - type: object
+          discriminator: object_type
+          required: 
+          - object_type
+          properties:
+            addOn:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/V1MobileAddOnCartItem"
+            sim:
+              $ref: "#/definitions/MobileSIMCartItem"
+            device: 
+              $ref: "#/definitions/V1MobileDeviceCartItem"
+            plan:
+              $ref: "#/definitions/V1MobilePlanCartItem"            
+            mobileProduct:
+              $ref: "#/definitions/MobileProduct"
+            addOnTotalPrice:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/CartPrice"
+       
+      V1MobileAddOnCartItem:
+        x-dox-Since: 10.2
+        description: |
+          Order Item for mobile add-on product
+        type: object       
+        allOf:
+        - $ref: "#/definitions/CartItem"   
+        - type: object
+          discriminator: object_type
+          required: 
+          - object_type
+          properties:
+            mobileAddOnProduct:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/MobileAddOnProduct"            
+            
+      MobileSIMCartItem:
+        x-dox-Since: 10.2
+        description: |
+          Order Item for SIM 
+        type: object       
+        allOf:
+        - $ref: "#/definitions/CartItem"   
+        - type: object
+          discriminator: object_type
+          required: 
+          - object_type
+          properties:
+            mobileSIMProduct:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/MobileSimProduct"            
+      
+      V1MobileDeviceCartItem:
+        x-dox-Since: 10.2
+        description: |
+          Order Item for Mobile Device.
+        type: object
+        allOf:
+        - $ref: "#/definitions/CartItem" 
+        - type: object
+          discriminator: object_type
+          required: 
+          - object_type
+          properties:
+            mobileDeviceProduct:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/MobileDeviceProduct"            
+        
+      
+      V1MobilePlanCartItem:
+        x-dox-Since: 10.2
+        description: |
+          Order Item for Mobile Plan.
+        type: object     
+        allOf:
+        - $ref: "#/definitions/CartItem"
+        - type: object
+          discriminator: object_type
+          required: 
+          - object_type
+          properties:
+            mobilePlanProduct:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/MobilePlanProduct"                    
+        
+      ProductRef:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the Product reference.
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"   
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            id:
+              description: |
+                ID of the Product
+              type: string
+            name:
+              description: |
+                Name of the Product
+              type: string
+            type:
+              $ref: "#/definitions/ProductType"
+              
+      Product:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the Product. 
+        type: object
+        allOf:
+        - $ref: "#/definitions/ProductRef"   
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productCharacteristic:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/CharacteristicNameAndValue"
+            status:
+              type: string
+            customer:
+              $ref: "#/definitions/CustomerRef"
+
+      MobileProduct:
+        x-dox-Since: 10.2
+        description: |
+          An Instance of Mobile Product being added.
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            billingAccount:
+              description: |
+                A reference of billing account for mobile product (Postpaid product).
+              $ref: "#/definitions/BillingAccountRef"
+            bucketBalance:
+              description: |
+                A reference of Prepaid Bucket for mobile product ( prepaid product)
+              $ref: "#/definitions/BucketBalanceRef"        
+            productIndividual:
+              description: |
+                Product Individual for the mobile Product
+              $ref: "#/definitions/IndividualRef"
+            plan:
+              description: |
+                Referencing Plan Product inside MobileProduct.
+              $ref: "#/definitions/MobilePlanProduct"
+            device:
+              description: |
+                Referencing device Product inside MobileProduct.
+              $ref: "#/definitions/MobileDeviceProduct"
+            sim:
+              description: |
+                Referencing sim Product inside MobileProduct.
+              $ref: "#/definitions/MobileSimProduct"
+            addOn:
+              description: |
+                Referencing addOn Products inside MobileProduct.
+              type: array
+              minItems: 0
+              items:
+                  $ref: "#/definitions/MobileAddOnProduct"                
+      
+      MobilePlanProduct:
+        x-dox-Since: 10.2
+        description: |
+          An Instance of Mobile Plan Product being added
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productSpecification:
+              description: |
+                Mobile plan product specification
+              $ref: "#/definitions/ProductSpecificationRef"
+            phoneNumber:
+              description: |
+                associated phone number
+              $ref: "#/definitions/PhoneNumberProduct"  
+            messaging:
+              $ref: "#/definitions/MessagingComunicationProduct"
+            voice:
+              $ref: "#/definitions/VoiceComunicationProduct"
+            data: 
+              $ref: "#/definitions/DataComunicationProduct"
+      
+      Commitment:
+        x-dox-Since: 10.2
+        description: |
+          Commitment
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          displayName:
+            type: string
+          duration:
+            type: integer
+          unitOfMeasure:
+            type: string
+            description: |
+               The unit of measure of this value (UN/CEFACT Common codes). In case of MONETARY value it will contain the currency code in ISO code). Supported values are -
+               - 2P ( kilobyte )
+               - 4L ( megabyte )
+               - E34 ( gigabyte )
+               - WEE ( week )
+               - MON ( month )
+               - ANN ( year )
+               - SEC ( second [unit of time] )
+               - MIN ( minute [unit of time] )
+               - HUR ( hour )
+               - DAY ( day )
+               - C26 ( millisecond ) 
+           
+              
+      MobileDeviceProduct:
+        x-dox-Since: 10.2
+        description: |
+          Mobile Device Product
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            imei:
+              type: string
+            productSpecification:
+              $ref: "#/definitions/MobileDeviceSpecification"
+            
+      MobileSimProduct:
+        x-dox-Since: 10.2
+        description: |
+          Mobile SIM Product
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productSpecification:
+              $ref: "#/definitions/MobileSimSpecification"
+            serialNumber:
+              type: string
+            sku:
+              type: string
+            simType:
+              type: string
+            imsi:
+              type: string
+        
+        
+      MobileAddOnProduct:
+        x-dox-Since: 10.2
+        description: |
+          Mobile Add-on Product
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          discriminator: type
+          required: 
+          - type
+          properties:
+            productSpecification:
+              $ref: "#/definitions/MobileAddOnSpecification"
+            addOn:
+              type: array
+              minItems: 0
+              items:
+                $ref: "#/definitions/MobileAddOnProduct"
+              
+            
+      BillingAccountRef:
+        x-dox-Since: 10.2
+        description: |
+          Billing account associated product
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"   
+        - type: object
+          properties:
+            id:
+              description: |
+                Identifier of the billing account
+              type: string
+      
+      BucketBalanceRef:
+        x-dox-Since: 10.2
+        description: |
+          Prepaid bucket associated product
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"   
+        - type: object
+          properties:
+            id:
+              description: |
+                Identifier of the bucket
+              type: string
+      
+      IndividualRef:
+        x-dox-Since: 10.2
+        description: |
+          Individual associated with the product.
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"   
+        - type: object
+          properties:
+            id:
+              description: |
+                Identifier of the Individual resource
+              type: string          
+            firstName:
+              description: |
+                first name of individual
+              type: string 
+            lastName:
+              description: |
+                last name of individual
+              type: string 
+      
+            
+      OrderRef:
+        x-dox-Since: 10.2
+        description: |
+          Order Reference
+        type: object
+        allOf:
+        - $ref: "#/definitions/Link"   
+        - type: object
+          properties:
+            id:
+              description: |
+                ID of the Order
+              type: string
+                  
+      CartPrice:
+        x-dox-Since: 10.2
+        description: |
+          Offering Price Information
+        type: object
+        properties:
+          id:
+            description: |
+              Billing offer ID, populated when there is a single BO attached to the component.
+            type: string
+          recurringChargePeriod: 
+            $ref: "#/definitions/RecurringChargePeriod"
+          usageUnitOfMeasure:
+            description: |
+              In case of UC price, specify the unit of measure that the price is applied for. e.g 3$ for a minute.
+            type: string
+          usageVolume:
+            type: number
+            format: double
+          name:
+            description: |
+              Text identifier of the price
+            type: string
+          type:
+            $ref: "#/definitions/PriceType"
+          displayName:
+            description: |
+              Localized price name. 
+            type: string
+          description:
+            description: |
+              Localized price description
+            type: string     
+          allowedOverrideType:
+            $ref: "#/definitions/AllowedOverrideType"
+          price:
+            $ref: "#/definitions/Price"
+          discount:
+            type: array
+            minItems: 0
+            items:
+              $ref: "#/definitions/Discount"
+          override:
+            $ref: "#/definitions/V1Override"
+        
+        
+      V1Override:
+        x-dox-Since: 10.2
+        description: |
+          Override Information that applies to Cart Price
+        type: object
+        properties:
+          name:
+            type: string
+            readOnly: true
+            description: |
+              Text identifier of the override, not localized. Map to the override reason code
+          displayName:
+            type: string
+            readOnly: true            
+            description: |
+              Localized override name. Map to the Localized override reason.
+          description:
+            type: string  
+            readOnly: true
+            description: |
+              description of the override. Map to the Override reason text
+          price:
+            readOnly: true
+            $ref: "#/definitions/Price"
+    #
+    # Variant Group 
+    #
+      VariantGroupInformation:
+        x-dox-Since: 10.2
+        description: |
+          The relevant variant group Information according to the devices that match the filter criteria.
+        type: object
+        properties:
+          name:
+            description: |
+              Text identifier of the variant group.
+            type: string
+          displayName:
+            description: |
+              Localized name of the variant group.
+            type: string
+          description:
+            description: |
+              The description of the variant group.
+            type: string
+          attachment:
+            description: | 
+              Attachments for the variant group.
+            type: array
+            minItems: 0
+            items:
+              $ref: "#/definitions/Attachment"
+          variantGroupCharacteristic:
+            description: |
+              The specification of the group's characteristics. It will contain the full set of possible values of each characteristic and not only the values on the returned variant items.
+            type: array
+            minItems: 1
+            items:
+              $ref: "#/definitions/VariantCharacteristic"
+              
+      VariantCharacteristic:
+        x-dox-Since: 10.2
+        description: |
+           Characteristic of variant group.
+        type: object
+        properties:
+              id:
+                description: |
+                  Identification of the variant characteristic in the catalog
+                type: string
+              name:
+                description: |
+                  Text identifier of the variant characteristic (color, storage)
+                type: string
+              displayName:
+                description: |
+                  Localized characteristic name
+                type: string
+              valueType:
+                description: |
+                  The type of the values for this variant characteristic: STRING, DATE, BOOLEAN, INTEGER, DOUBLE, MONETARY
+                $ref: "#/definitions/ValueType"  
+              value:
+                type: array
+                minItems: 1
+                items:
+                  $ref: "#/definitions/VariantCharacteristicValue"
+
+      VariantCharacteristicValue:
+        x-dox-Since: 10.2
+        description: |
+          The representation of the value of Variant Characteristic
+        type: object
+        properties:
+          type:
+            $ref: "#/definitions/ValueType"
+          value:
+            type: string
+            description: |
+              Characteristic value.
+          displayValue:
+            type: string
+            description: | 
+              Characteristic display value 
+          unitOfMeasure:
+            type: string
+            description: |
+               The unit of measure of this value (UN/CEFACT Common codes). In case of MONETARY value it will contain the currency code in ISO code). Supported values are -
+               - 2P ( kilobyte )
+               - 4L ( megabyte )
+               - E34 ( gigabyte )
+               - WEE ( week )
+               - MON ( month )
+               - ANN ( year )
+               - SEC ( second [unit of time] )
+               - MIN ( minute [unit of time] )
+               - HUR ( hour )
+               - DAY ( day )
+               - C26 ( millisecond ))
+          image: 
+            type: string
+            description: |
+              URL for image that describes this variant characteristic value, for example image for color red.
+
+      VariantItemCharacteristic:
+        x-dox-Since: 10.2
+        description: |
+          Holds the name and the value of the variant characteristic
+        type: object
+        properties:
+          id: 
+            type: string
+            description: |
+              The unique identification of characteristic.
+          value: 
+            type: string
+            description: |
+              The variant characteristic value.         
+
+      
+    #
+    # Common models
+    #
+      ErrorResponse:
+        x-dox-Since: v10.0.1
+        type: object
+        description: |
+          Response containing descriptive error text, error code
+        required:
+        - code
+        - message
+        properties:
+          code:
+            description: |
+              The code associated with the error
+            readOnly: false
+            type: integer
+          message:
+            description: |
+              The message associated with the error
+            readOnly: false
+            type: string
+            
+      Link:
+        x-dox-Since: v10.0.1
+        type: object
+        description: |
+          A representation for a link
+        required:
+        - href
+        - rel
+        properties:
+          href:
+            type: string
+            format: url
+            description: |
+              The href to the item
+            readOnly: false
+          rel:
+            type: string
+            description: |
+              The relation type for the item
+            readOnly: false
+            enum:
+            - self
+            - prev
+            - next
+            - alternate
+            - first
+            - last
+            - current
+            - edit
+            - enclosure
+            - related
+            - replies
+            - up
+            - help
+
+
+      Attachment:
+        x-dox-Since: 10.2
+        description: |
+          URL for static resource (e.g image or video) that describe the offer.
+        type: object
+        properties:
+          id:
+            description: |
+              The unique identification of the attachment.
+            type: string
+          type:
+            $ref: "#/definitions/AttachmentType"
+          purpose:
+            $ref: "#/definitions/AttachmentPurposeType"
+          url:
+            description: |
+              The url where the attachment is available.
+            type: string
+          mimeType:
+            description: |
+              The file MIME type e.g. video/mp4,image/png, image/jpeg
+            type: string
+      
+      Price:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the Price
+        type: object
+        properties:
+          currencyCode:
+            type: string
+            description: |
+              ISO code for currency. e.g USD
+          taxRate:
+            type: number
+            format: bigDecimal
+            description: |
+              The percentage of the tax. e.g 10 for 10%
+          taxIncludedAmount:
+            type: number
+            format: bigdecimal
+            description: |
+              Price amount with tax included
+          amount:
+            type: number
+            format: bigdecimal
+            description: |
+              Price amount without tax.  
+          taxAmount:
+            type: number
+            format: bigdecimal
+            description: |
+              Tax amount.
+      
+      Discount:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the Discount indicator for the offering.
+        type: object
+        properties:
+            name:
+              type: string
+              description: |
+                The code of the discount.
+            displayName:
+              type: string
+              description: |
+                The name of the discount.
+            description:
+              type: string
+              description: |
+                The description of the discount.
+            duration:
+              type: integer
+              format: int32
+              description: |
+                The duration of the discount if exist. (promotion)
+            durationUnitOfMeasure:
+              type: string
+              description: |
+                The unit of measure of this value (UN/CEFACT Common codes). Supported values are:                
+                - WEE ( week )
+                - MON ( month )
+                - ANN ( year )
+                - SEC ( second [unit of time] )
+                - MIN ( minute [unit of time] ) 
+                - HUR ( hour )
+                - DAY ( day )
+                - C26 ( millisecond ) 
+            percentage:
+              type: number
+              format: float
+              maximum: 100
+              description: |
+                The percentage of the discount, in case the discount is given in percentage and not fixed amount.
+            price:
+              $ref: "#/definitions/Price" 
+
+      CustomerRef:
+        x-dox-Since: 10.2
+        type: object
+        description: |
+          Representation of the Customer reference.
+        allOf:
+        - $ref: "#/definitions/Link"
+        - type: object
+          properties:
+            id:
+              type: string
+              description: |
+                The unique identifier of the Customer
+            name:
+              type: string
+              description: |
+                Customer name.
+              
+      PriceOption:
+        x-dox-Since: 10.2
+        description: |
+          Representation of the price
+        type: object
+        discriminator: type
+        required:
+          - type
+        properties:
+          type:
+            $ref: "#/definitions/PriceOptionType"
+          minPrice:
+            $ref: "#/definitions/PriceOptionItem"
+          maxPrice:
+            $ref: "#/definitions/PriceOptionItem"                     
+          priceOptionItem:
+            description: |
+              List of the items that constitute the price option derived from the combination of these price option items.
+            type: array
+            minItems: 1
+            items:
+              $ref: "#/definitions/PriceOptionItem"
+          
+      
+      ConditionCharacteristic:
+        x-dox-Since: 10.2
+        description: |
+          Represent a combination of parameter name and value. 
+        type: object
+        properties:
+          name:
+            type: string
+            description: |
+              The name of the parameter
+          value:
+            type: string
+            description: |
+                The value of the combination
+      
+      PriceOptionItem:
+        x-dox-Since: 10.2
+        description: |
+          The set of option items that determine the price of the offering based on their various combinations.
+        type: object
+        discriminator: type
+        required:
+          - type
+        properties:
+          type:
+            $ref: "#/definitions/PriceOptionItemType"
+          price:
+            $ref: "#/definitions/Price"
+          discount:
+            $ref: "#/definitions/Discount"
+          condition:
+            type: array
+            minItems: 0
+            items:
+              $ref: "#/definitions/ConditionCharacteristic"          
+              
+      CharacteristicNameAndValue:
+        x-dox-Since: 10.2
+        description: |
+          The Name and value of specific characteristic
+        type: object
+        properties:
+          name: 
+            type: string
+            description: |
+              Catalog Characteristic name
+          displayName: 
+            type: string
+            description: |
+              localized characteristic name
+          value: 
+            type: string
+            description: |
+              Characteristic value.
+          displayValue: 
+            type: string
+            description: |
+               localized characteristic value.
+          unitOfMeasure: 
+            type: string
+            description: |
+               The unit of measure of this value (UN/CEFACT Common codes). In case of MONETARY value it will contain the currency code in ISO code). Supported values are -
+               - 2P ( kilobyte )
+               - 4L ( megabyte )
+               - E34 ( gigabyte )
+               - WEE ( week )
+               - MON ( month )
+               - ANN ( year )
+               - SEC ( second [unit of time] )
+               - MIN ( minute [unit of time] )
+               - HUR ( hour )
+               - DAY ( day )
+               - C26 ( millisecond )
+      
+      DescriptiveCharacteristic:
+        x-dox-Since: 10.2
+        description: |
+          Characteristic that describes the product and can't be configured.
+        type: object
+        properties:
+          id:
+            type: string
+            description: |
+              Identification of the descriptive characteristic
+          name:
+            type: string
+            description: |
+              Text identifier of the descriptive characteristic
+          displayName:
+            type: string
+            description: |
+              localized characteristic name
+          type: 
+            $ref: "#/definitions/DescriptiveCharacteristicType"
+          valueType:
+            $ref: "#/definitions/ValueType"
+          purpose:
+            type: array
+            minItems: 0
+            description: |
+              The purpose of the characteristic. e.g overview - the characteristic provides overview information on the products
+            items:
+              $ref: "#/definitions/DescriptivePurposeType"
+          value:
+            type: array
+            minItems: 1
+            description: | 
+              Value of the descriptive characteristic
+            items:
+              $ref: "#/definitions/DescriptiveCharacteristicValue"
+          group:
+            $ref: "#/definitions/CharacteristicGroup"
+       
+      DescriptiveCharacteristicValue:
+        x-dox-Since: 10.2
+        description: |
+          Available values of the descriptive characteristic 
+        type: object
+        properties:
+          type:
+           $ref: "#/definitions/ValueType"
+          value: 
+            type: string
+            description: |
+              Characteristic value.
+          displayValue: 
+            type: string
+            description: |
+              Localized characteristic value.
+          valueFrom: 
+            type: string
+            description: |
+              Applicable only in case of range filter. Represents the lower limit of this value
+          valueTo: 
+            type: string
+            description: |
+                Applicable only in case of range filter. Represents the upper limit of this value
+          unitOfMeasure: 
+            type: string
+            description: |
+               The unit of measure of this value (UN/CEFACT Common codes). In case of MONETARY value it will contain the currency code in ISO code). Supported values are -
+               - 2P ( kilobyte )
+               - 4L ( megabyte )
+               - E34 ( gigabyte )
+               - WEE ( week )
+               - MON ( month )
+               - ANN ( year )
+               - SEC ( second [unit of time] )
+               - MIN ( minute [unit of time] )
+               - HUR ( hour )
+               - DAY ( day )
+               - C26 ( millisecond )
+              
+      CharacteristicGroup:
+        x-dox-Since: 10.2
+        description: |
+          A logical grouping of characteristic, typically will display together
+        type: object
+        properties:
+          name:
+            type: string
+            description: |
+              Text identifier of the group
+          displayName:
+            type: string
+            description: |
+              A localized name of the group
+      
+              
+      DeliveryMethod:
+        x-dox-Since: 10.2
+        description: |
+          Delivery Method details.
+        type: object
+        properties:
+          name:
+            $ref: "#/definitions/DeliveryMethodType"
+          isDefault:
+            description: |
+             Indication whether this delivery method is default or not.
+            type: boolean
+  
+      AddAccessoryCartItemInput:
+        description: |
+          Representation of the input to the add accessories to cart item.
+        type: object
+        properties:
+          accessoryCartItem:
+            $ref: "#/definitions/V1AccessoryCartItem"
+
+      AddAccessoryCartItemOutput:
+        description: |
+          Representation of the output of Accessories cart item operation.
+        type: object
+        properties:
+          addedAccessoryCartItem:
+            type: string
+          shoppingCart:
+            $ref: "#/definitions/ShoppingCart"
+            
+      V1AccessoryCartItem:
+        x-dox-Since: 10.2
+        description: |
+          Order Item for Accessories
+        type: object
+        allOf:
+        - $ref: "#/definitions/CartItem"
+        - type: object
+          discriminator: object_type
+          required:
+          - object_type
+
+      AccessoryProduct:
+        x-dox-Since: 10.2
+        description: |
+          An Instance of Accessory Product being added.
+        type: object
+        allOf:
+        - $ref: "#/definitions/Product"
+        - type: object
+          properties:
+            productSpecification:
+              $ref: "#/definitions/AccessorySpecification"
+
+           
+    #
+    # Enumerations 
+    #
+          
+      DescriptivePurposeType:
+        x-dox-Since: 10.2
+        description: |
+          The purpose of the characteristic
+        type: string
+        enum:
+        - details
+        - overview
+        - summary
+          
+      CharacteristicType:
+        x-dox-Since: 10.2
+        description: |
+          The type of the characteristic
+        type: string
+        enum:
+        - range
+        - discrete
+        - text
+        
+      DescriptiveCharacteristicType:
+        x-dox-Since: 10.2
+        description: |
+          The type of the characteristic
+        type: string
+        enum:
+        - range
+        - discrete          
+      
+      PaymentManagementType:
+        x-dox-Since: 10.2
+        description: |
+          Payment Management Type
+        type: string
+        enum:
+        - pre
+        - post
+        - both
+        
+      OfferingType:
+        x-dox-Since: 10.2
+        description: |
+          Offering Type
+        type: string
+        enum:
+          - mobileOffering
+          - mobilePlanOffering
+          - mobileDeviceOffering
+          - mobileAddonOffering
+          - mobileSimOffering
+          - accessoryOffering
+        
+      PriceOptionType:
+        x-dox-Since: 10.2
+        description: |
+          Price Option Type
+        type: string
+        enum:
+          - mobileDevicePriceOption
+          - mobilePlanPriceOption
+          - mobileAddonPriceOption
+          - accessoryPriceOption
+      
+      PriceOptionItemType:
+        x-dox-Since: 10.2
+        description: |
+          Price Option Item Type
+        type: string
+        enum:
+          - mobileDevicePriceOptionItem
+          - mobilePlanPriceOptionItem
+          - mobileAddonPriceOptionItem
+          - accessoryPriceOptionItem
+        
+      PriceType:
+        x-dox-Since: 10.2
+        description: |
+          Price Type
+        type: string
+        enum:
+          - oneTime
+          - recurring
+          - allowance 
+          - usage
+        
+      RecurringChargePeriod:
+        x-dox-Since: 10.2
+        description: |
+          Recurring Charges period
+        type: string
+        enum:
+          - month
+          - biMonth
+        
+      ProductSpecificationType:
+        x-dox-Since: 10.2
+        description: |
+          Product Specification Types
+        type: string
+        enum:
+          - mobileDeviceSpecification
+          - mobilePlanSpecification
+          - mobileSimSpecification
+          - mobileAddOnSpecification
+          - accessorySpecification
+        
+      SimDeviceCombinationType:
+        x-dox-Since: 10.2
+        description: |
+          Product Specification Types
+        type: string
+        enum:
+          - simOnly
+          - deviceMandatory
+          - deviceOptional
+          
+      AttachmentType:
+        x-dox-Since: 10.2
+        description: |
+          Attachment type: image, video
+        type: string
+        enum:
+          - image
+          - video
+          - text
+          - html
+        
+      AttachmentPurposeType:
+        x-dox-Since: 10.2
+        description: |
+          The purpose of the attachment: 360Galery, back, front, dimensions
+        type: string
+        enum:
+          - list
+          - details
+          - summary
+          - dimensions
+          - banner
+      
+      ValueType:
+        x-dox-Since: 10.2   
+        description: |
+          Value Type
+        type: string
+        enum:
+          - STRING
+          - DATE
+          - BOOLEAN
+          - INTEGER
+          - DOUBLE
+          - MONETARY
+      
+      ProductType:
+        x-dox-Since: 10.2
+        description: |
+          Product Type
+        type: string
+        enum:
+          - accessoryProduct
+          - mobileProduct
+          - mobileDeviceProduct
+          - mobileAddonProduct
+          - mobilePlanProduct
+          - mobileSimProduct
+          - deliveryProduct
+          - phoneNumberProduct
+          - messagingCommunicationProduct
+          - voiceCommunicationProduct
+          - dataCommunicationProduct
+        
+      CartItemActionType:
+        x-dox-Since: 10.2
+        description: |
+          Action Type
+        type: string
+        enum:
+          - add
+          - modify
+          - delete
+          - noChange
+          - replace
+      
+      CartItemType:
+        x-dox-Since: 10.2
+        description: |
+          Order Item Type
+        type: string
+        enum:
+          - mobileCartItem
+          - mobilePlanCartItem
+          - mobileDeviceOderItem
+          - mobileAddOnCartItem
+          - mobileSIMCartItem
+          - accessoryCartItem
+     
+      DeviceRelationshipType:
+        x-dox-Since: 10.2
+        type: string
+        enum:
+          - fixedBundledRelationship
+          - dynamicBundleRelationship
+        
+      CartValidationStatus:
+        x-dox-Since: 10.2
+        type: string
+        enum:
+          - blocked
+          - warning
+          - information
+          - success
+        
+      ContactMediumType:
+        x-dox-Since: 10.2
+        type: string
+        enum:
+          - mobilePhone
+          - workPhone
+          - homePhone
+          - email
+          - postalAddress
+        
+      CartItemStatusType:
+        x-dox-Since: 10.2
+        type: string
+        enum:
+        - active
+        - saveForLater
+        
+      ChannelType:
+        x-dox-Since: 10.2
+        type: string
+        enum:
+        - selfService
+        - retail
+        - callCenter
+      ValidationMessageType:
+       x-dox-Since: 10.2
+       type: string
+       enum:
+       - eligibility
+       - compatibility  
+       
+      StockAvailabilityStatus:
+        x-dox-Since: 10.2   
+        description: |
+          Stock Availability Status
+        type: string
+        enum:
+        - inStock
+        - outOfStock
+      
+      AllowedOverrideType:
+        x-dox-Since: 10.2   
+        description: |
+          Allowed Override Types
+        type: string
+        enum:
+        - waiveOnly
+        - override
+        - none
+        
+        
+      DeliveryMethodType:
+        x-dox-Since: 10.2
+        description: |
+          The types of delivery method, the default method should be shipping
+        type: string
+        enum:
+        - shipping
+        - pickUpInStore
+        - inCustomerHand
+        - all
+     
+      CartItemRelationshipType:
+        x-dox-Since: 10.2
+        description: |
+          The type of relationship between cart items
+        type: string
+        enum:
+        - replaceFrom
+        - replaceTo
+        
+ 
+    # Mobile Plan Specification
+    #
+      MobilePlanSpecification:
+        x-dox-Since: 10.2
+        x-dox-enriched-object: id
+        description: |
+          The representation of the Specification for Mobile Plan. 
+        type: object
+        allOf:
+        - $ref: "#/definitions/ProductSpecification" #inheritance
+        - type: object
+          properties:
+            messaging:
+              $ref: "#/definitions/MessagingComunicationSpecification"
+            voice:
+              $ref: "#/definitions/VoiceComunicationSpecification"
+            data:
+              $ref: "#/definitions/DataComunicationSpecification"           
+    #
+    # Responses
+    #
+    responses:
+      400-BadRequest:
+        x-dox-Since: v10.2
+        description: |
+          *Bad Request* - Indicates that client has sent malformed request.
+          Possibly missing mandatory query parameters, invalid value
+          in query parameters, validation exception etc.
+        schema:
+          $ref: "#/definitions/ErrorResponse"
+      
+      401-Unauthorized:
+        x-dox-Since: v10.2
+        description: |
+          *Unauthorized* - server rejected the clients credentials
+        schema:
+          $ref: "#/definitions/ErrorResponse"
+          
+      403-Forbidden:
+        x-dox-Since: v10.2
+        description: |
+          *Forbidden* - Operation not allowed due to either permissions or other business rules
+        schema:
+          $ref: "#/definitions/ErrorResponse"
+          
+      404-NotFound:
+        x-dox-Since: v10.2
+        description: |
+          *Not Found* - Indicates server has not found the requested URI.
+          Possibly missing path parameters, invalid web resource etc.
+        schema:
+          $ref: "#/definitions/ErrorResponse"
+      
+      409-Conflict:
+        x-dox-Since: v10.2
+        description: |
+          *Conflict* - Current state of the resource conflict with the type of operation.
+        schema:
+          $ref: "#/definitions/ErrorResponse"
+      
+      500-InternalServerError:
+        x-dox-Since: v10.2
+        description: |
+          *Internal Server Error* - server failed in handling the
+          client request.
+        schema:
+          $ref: "#/definitions/ErrorResponse"

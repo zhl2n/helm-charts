@@ -1,0 +1,82 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: shoppingcart-experience-service-appconfigmap
+data:
+  application.yaml: |-
+    spring.zipkin.enabled: 'true'
+    spring.zipkin.baseUrl: 'http://zipkin-service:9411'
+    spring.zipkin.sender.type: 'web'
+    spring.zipkin.encoder: 'json-v1'
+    spring.sleuth.sampler.percentage: '0.1'
+
+    server:
+      port: "{{.Values.appConfigMap.serverPort}}"
+          
+    #External services - Add URIs of required services here - for dev purpose - May get replaced with service discovery
+    services:
+      shoppingCartCheckout:
+        url: "{{.Values.appConfigMap.servicesShoppingCartCheckoutUrl}}"
+      shoppingCartModify:
+        url: "{{.Values.appConfigMap.servicesShoppingCartModifyUrl}}"
+      shoppingCart:
+        url: "{{.Values.appConfigMap.servicesShoppingCartUrl}}"
+      productConfiguration:
+        url: "{{.Values.appConfigMap.servicesproductConfigurationService}}"
+      default:
+        url: "{{.Values.appConfigMap.servicesManagedResourcesUrl}}"
+          
+    com:
+      amdocs:
+        digital:
+          ms:
+            #single value
+            default-locale: "{{.Values.appConfigMap.defaultLocale}}"
+            #comma separated list
+            supported-locales: "{{.Values.appConfigMap.supportedLocales}}"
+        msnext:
+          securityjwt:
+            jwt:
+              validation:
+                jwt:
+                  ca:   
+                    root1: {{.Values.appConfigMap.securityjwtCertificateRoot1}}
+                    root2: {{.Values.appConfigMap.securityjwtCertificateRoot2}}
+          securitya3s:
+            url: "{{.Values.appConfigMap.securitya3sUrl}}"
+            user: "{{.Values.appConfigMap.securitya3sUser}}"
+            password: "{{.Values.appConfigMap.securitya3sPassword}}"
+            service:
+              roles:
+                modifyorder:
+                  changeOwnershipProductOrder: "{{.Values.appConfigMap.changeOwnershipProductOrder}}"
+                                        
+    #Logging
+    logging:
+      level:
+        org:
+          springframework: "{{.Values.appConfigMap.loggingLevelOrgSpringframework}}"
+          apache: "{{.Values.appConfigMap.loggingLevelOrgApache}}"
+        com:
+          amdocs:
+            digital:
+              ms: "{{.Values.appConfigMap.loggingLevelComAmdocsDigitalMS}}"
+            msnext:
+              boot:
+                Boot: "{{.Values.appConfigMap.loggingLevelComAmdocsMsnextBootBoot}}"              
+                          
+    #disable security for now.    
+    security:
+      basic:
+        enabled: "{{.Values.appConfigMap.securityBasicEnabled}}"
+
+    #configuration of shoppincart types
+    configuration:
+      productOfferingType:
+        mobileBundle: "{{.Values.appConfigMap.productOfferingTypeMobileBundle}}"
+        mobileDevice: "{{.Values.appConfigMap.productOfferingTypeMobileDevice}}"
+        mobilePlan: "{{.Values.appConfigMap.productOfferingTypeMobilePlan}}"
+        mobileSim: "{{.Values.appConfigMap.productOfferingTypeMobileSim}}"
+        mobileAddOn: "{{.Values.appConfigMap.productOfferingTypeMobileAddOn}}"
+        mobileAccessory: "{{.Values.appConfigMap.productOfferingTypeMobileAccessory}}"
+

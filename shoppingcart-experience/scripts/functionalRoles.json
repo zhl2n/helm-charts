@@ -1,0 +1,9 @@
+{
+  "roles": [
+    {
+      "name": "Write",
+      "scope": "Order",
+      "type": "ROLE"
+    }
+  ]
+}

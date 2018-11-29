@@ -1,0 +1,10 @@
+{{- if .Values.appConfigMap.apigwEnabled }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ .Chart.Name }}-apigw"
+  annotations:
+    hashcode: '{{.Values.appConfigmap.hashcode}}'
+data:
+  shoppingcart-experience-api.yaml: {{ .Files.Get "scripts/shoppingcartexp-api-api.yaml" | quote | replace "\\r\\n" "\\n"}}
+{{- end }}

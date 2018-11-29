@@ -1,0 +1,131 @@
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  annotations:
+    fabric8.io/iconUrl: "img/icons/spring-boot.svg"
+    git-commit: "@git.commit.id@"
+  labels:
+    project: "shoppingcart-experience"
+    provider: amdocs
+    microservice: {{ template "name" . }}
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  name: {{ template "fullname" . }}
+spec:
+  minReadySeconds: {{.Values.minReadySeconds}}
+  revisionHistoryLimit: {{.Values.revisionHistoryLimit}} # keeps max  revisions for rollback
+  replicas: {{.Values.replicas}}
+  strategy:
+    type: "{{.Values.deploymentStrategy.type}}"
+    rollingUpdate:
+      maxSurge: {{.Values.deploymentStrategy.maxSurge}}
+      maxUnavailable: {{.Values.deploymentStrategy.maxUnavailable}}
+  selector:
+    matchLabels:
+      project: "shoppingcart-experience"
+      provider: "amdocs"
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      annotations:
+        fabric8.io/iconUrl: "img/icons/spring-boot.svg"
+        checksum/config: {{ include (print $.Template.BasePath "/app-configmap.yaml") . | sha256sum }}
+        git-commit: "@git.commit.id@"
+      labels:
+        provider: "amdocs"
+        project: "shoppingcart-experience"
+        microservice: {{ template "name" . }}
+        release: "{{ .Release.Name }}"
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - env:
+        - name: "MSNEXT_CONF_SOURCE_APP"
+          value: "/etc/config"
+        - name: "KUBERNETES_NAMESPACE"
+          value: "{{.Values.containerinfo.kubernetesnamespace}}"
+          valueFrom:
+            fieldRef:
+              fieldPath: "metadata.namespace"
+        {{- if eq .Values.sslEnable "true"}}
+        - name: "MSNEXT_JAVA_OPTS"
+          value: "{{.Values.containerinfo.javaOptions.msnext}} {{.Values.containerinfo.javaOptions.jvm}} {{.Values.containerinfo.javaOptions.a3s}} {{.Values.containerinfo.javaOptions.ssl}}"
+        - name: "SERVER_PORT"
+          value: "8443"
+        {{- else}}
+        - name: "MSNEXT_JAVA_OPTS"
+          value: "{{.Values.containerinfo.javaOptions.msnext}} {{.Values.containerinfo.javaOptions.jvm}} {{.Values.containerinfo.javaOptions.a3s}}"
+        - name: "SERVER_PORT"
+          value: "8080"
+        {{- end}}
+
+        {{if .Values.jacoco.enabled}}
+        - name: MSNEXT_JACOCO_ENABLE
+          value: "{{.Values.jacoco.enabled}}"
+        - name: MSNEXT_JACOCO_OPTS
+          value: "{{.Values.jacoco.opts}}"
+        {{end}}
+        - name: "MSNEXT_DISABLED_MODULES"
+          value: "msnext-customization"
+        - name: "MANAGEMENT_PORT"
+          value: "18080"
+        - name: "SHOPPING_CART_MODIFY_URL"
+          value: "{{.Values.containerinfo.env.servicesShoppingCartModifyUrl}}"
+                      
+        image: "{{.Values.containerinfo.image}}:{{.Values.containerinfo.imageTag}}"
+        imagePullPolicy: "{{.Values.containerinfo.imagePullPolicy}}"
+        livenessProbe:
+          httpGet:
+            path: "/health"
+            port: 18080
+          initialDelaySeconds: {{.Values.containerinfo.livenessProbe.initialDelaySeconds}}
+          timeoutSeconds: {{.Values.containerinfo.livenessProbe.timeoutSeconds}}
+        name: "shoppingcart-experience-service-container"
+        resources:
+          requests:
+            memory: "{{.Values.containerinfo.resources.requests.memory}}"
+            cpu: "{{.Values.containerinfo.resources.requests.cpu}}"
+          limits:
+            memory: "{{.Values.containerinfo.resources.limits.memory}}"
+            cpu: "{{.Values.containerinfo.resources.limits.cpu}}"
+        ports:
+        - containerPort: 5555
+          name: metrics
+        - containerPort: 8080
+          name: "http"
+          protocol: "TCP"
+        - containerPort: 8443
+          name: "https"
+          protocol: "TCP"
+        - containerPort: 18080
+          name: "management"
+          protocol: "TCP"
+        volumeMounts:
+          - name: confmap-volume
+            mountPath: /etc/config
+        {{- if eq .Values.sslEnable "true"}}
+        volumeMounts:
+          - name: {{.Values.containerinfo.volumes.name}}
+            mountPath: "{{.Values.containerinfo.volumeMounts.mountPath}}"
+        {{- end}}
+        readinessProbe:
+          httpGet:
+            path: "/health"
+            port: 18080
+          initialDelaySeconds: {{.Values.containerinfo.readinessProbe.initialDelaySeconds}}
+          timeoutSeconds: {{.Values.containerinfo.readinessProbe.timeoutSeconds}}
+        securityContext:
+          privileged: false
+      imagePullSecrets:
+        - name: "{{.Values.secret.name}}"
+      volumes:
+        - name: confmap-volume
+          configMap:
+            name: shoppingcart-experience-service-appconfigmap
+      {{- if eq .Values.sslEnable "true"}}
+      volumes:
+        - name: {{.Values.containerinfo.volumes.name}}
+          persistentVolumeClaim:
+            claimName: {{.Values.containerinfo.volumes.persistentVolumeClaim.claimName}}
+      {{- end}}

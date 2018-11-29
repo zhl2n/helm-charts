@@ -1,0 +1,71 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shoppingcart-experience-a3s
+  labels:
+    project: shoppingcart-experience
+    provider: amdocs
+    microservice: {{ template "name" . }}
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    satellite: "a3s"
+  annotations:
+    "helm.sh/hook": {{ .Values.jobs.configureThirdPartiesPersistent }}
+    "helm.sh/hook-weight": "11"
+spec:
+  template:
+    metadata:
+      name:  {{ printf "%s-%s" "shoppingcart-experience" .Chart.Name | quote }}
+      labels:
+        provider: amdocs
+        project: shoppingcart-experience
+        microservice: {{ template "name" . }}
+        release: "{{ .Release.Name }}"
+        app: {{ template "fullname" . }}
+        satellite: "a3s"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: a3s-install
+          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
+          command: ["/opt/app-root/bin/python", "-c", {{ .Files.Get "scripts/deployA3S.py" | quote }} ]
+          env:
+          - name: MICROSERVICE_NAME
+            value: {{ .Release.Name }}
+          - name: A3S_SERVICE
+            value: "{{ .Values.a3s.serviceName }}"
+          - name: A3S_USER
+            value: "{{ .Values.a3s.username}}"
+          - name: A3S_PASSWORD
+            value: "{{ .Values.a3s.password}}"
+          - name: A3S_SERVICE_USER_PASSWORD
+            value: "{{ .Values.a3s.serviceuserPassword }}"
+          - name: A3S_FUNCTIONALROLES_BASE64
+            value: {{ .Files.Get "scripts/functionalRoles.json" | b64enc | quote }}
+          - name: A3S_APIFUNCTIONALROLES_BASE64
+            value: {{ .Files.Get "scripts/apiFunctionalRoles.json" | b64enc | quote }}
+          - name: A3S_MAP_FUNCTIONAL_ROLES_TO_BUSINESS_ROLES_BASE64
+            value: {{ .Files.Get "scripts/mapFunctionalRolesToBusinessRoles.json" | b64enc | quote }}
+          - name: A3S_SERVICE_ROLE_BASE64
+            value: {{ .Files.Get "scripts/serviceRole.json" | b64enc | quote }}
+          - name: A3S_SERVICE_USER_BASE64
+            value: {{ .Files.Get "scripts/serviceUser.json" | b64enc | quote }}
+          - name: A3S_TIMEOUT
+            value: "{{ .Values.a3s.timeout}}"
+          - name: A3S_RETRIES
+            value: "{{ .Values.a3s.retries}}"
+          - name: A3S_PORT
+            value: "{{.Values.a3s.port}}"
+          - name: DEBUG
+            value: "{{ .Values.jobs.verbose.a3s}}"
+          - name: A3S_DIALECT
+            value: "{{ .Values.a3s.dialect}}"
+          - name: HEADER_AUTHORIZATION
+            value: "{{ .Values.a3s.loadToken }}"
+          - name: HEADER_ACCEPT_LANGUAGE
+            value: "{{ .Values.a3s.acceptLanguage }}"
+          - name: A3S_MAP_FUNCTIONAL_ROLES_TO_BUSINESS_ROLES_FLAG
+            value: "{{ .Values.a3s.mapFunctionalRolesToBusinessRoles }}"
+      imagePullSecrets:
+        - name: "{{ .Values.jobs.secret.name }}"

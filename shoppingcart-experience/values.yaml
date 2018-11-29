@@ -1,0 +1,121 @@
+envType: "dev" ### you can have dev:development prod:production
+sslEnable: "false"
+replicas: 1
+minReadySeconds: 100
+revisionHistoryLimit: 5
+deploymentStrategy:
+  type: RollingUpdate
+  maxSurge: 1
+  maxUnavailable: 1
+containerinfo:
+  image: illin5564.corp.amdocs.com:7000/shoppingcart-experience-service
+  imagePullPolicy: IfNotPresent
+  imageTag: 0.1.1-0031
+  javaOptions:
+    msnext:
+    jvm: -Xms512m -Xmx512m -XX:MaxRAM=1024m -XX:+UseSerialGC
+    ssl: >-
+      -Dserver.ssl.key-store=/mnt/amdocsMSKeyStore.p12
+      -Dserver.ssl.key-store-password=changeit
+      -Dserver.ssl.key-store-type=PKCS12 -Dserver.port=8443 -Dserver.ssl.enabled=true
+      -Djavax.net.ssl.trustStore=/mnt/AmdocsTestCA-Trust.jks -Dmanagement.ssl.enabled=false
+  volumes:
+    name: ms-keystore-volume
+    persistentVolumeClaim:
+      claimName: ms-keystore-pvc
+  volumeMounts:
+    mountPath: /mnt
+  resources:
+    requests:
+      memory: "1024Mi"
+      cpu: "1"
+    limits:
+      memory: "2048Mi"
+      cpu: "2"
+  livenessProbe:
+    initialDelaySeconds: 900
+    timeoutSeconds: 10
+  readinessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 10
+  env:
+    servicesShoppingCartCheckoutUrl: http://shoppingcart-checkout-service:8080/shoppingCart/v1  
+    servicesShoppingCartModifyUrl: http://shoppingcart-modify-service:8080/shoppingCart/v1
+    servicesShoppingCartUrl: http://shoppingcart-shoppingcart-service:8080/shoppingCart/v1   
+    servicesManagedResourcesUrl: http://managed-resource-service:8080/managedResource/v1
+    servicesproductConfigurationService: http://productconfigurator-service:8080/productConfigurator/v0/productConfiguration
+   
+    
+service:
+  serviceType: NodePort
+  expose: "true"
+secret:
+  snapshotToken: "ewoJImF1dGhzIjogewoJCSJpbGxpbjU1NjQuY29ycC5hbWRvY3MuY29tOjcwMDAiOiB7CgkJCSJhdXRoIjogImNITnRaRzlqYTJWeU9uVnVhWGd4TVE9PSIKCQl9Cgl9Cn0="
+  releaseToken: "ewoJImF1dGhzIjogewoJCSJpbGxpbjU1NjQuY29ycC5hbWRvY3MuY29tOjUwMDAiOiB7CgkJCSJhdXRoIjogImNIVnNiSFZ6WlhJNmRXNXBlREV4IgoJCX0KCX0KfQ=="
+  type: kubernetes.io/dockerconfigjson
+  name: shoppingcart-experience-ms-secret
+jobs:
+  helmServiceAccount: default
+  secret:
+    dockerconfigjson: ewoJImF1dGhzIjogewoJCSJpbGxpbjUyMjUuY29ycC5hbWRvY3MuY29tOjUwMDAiOiB7CgkJCSJhdXRoIjogImNITnRaRzlqYTJWeU9uVnVhWGd4TVE9PSIKCQl9Cgl9Cn0K
+    type: kubernetes.io/dockerconfigjson
+    name: jobs-shoppingcart-experience-ms-secret
+  dockerRegistry: illin5225.corp.amdocs.com:5000
+  verbose:
+    couchbase: false
+    a3s: true
+    cleanup: false
+  configureThirdPartiesPersistent: pre-install,pre-upgrade,pre-rollback
+jacoco:
+  enabled: false
+  opts: "output=tcpserver,address=*,port=6300"
+a3s:
+  serviceName: "asm-services-cloud-service"
+  dialect: "A3S_Core_Public"
+  username: "a3sDeployer"
+  password: "A3sDeployer!"
+  serviceuserPassword: "Unix11!"
+  timeout: "90"
+  port: "9191"
+  retries: "3"
+  loadToken: "Basic YTNzRGVwbG95ZXI6QTNzRGVwbG95ZXIh"
+  acceptLanguage: "en_US"
+  #sample data - map functional roles to business roles
+  mapFunctionalRolesToBusinessRoles: true
+ 
+appConfigMap:
+  serverPort: 8080
+  hashcode: shoppingcart-experience-hashcode
+  servicesShoppingCartCheckoutUrl: http://shoppingcart-checkout-service:8080/shoppingCart/v1  
+  servicesShoppingCartUrl: http://shoppingcart-shoppingcart-service:8080/shoppingCart/v1   
+  servicesManagedResourcesUrl: http://managed-resource-service:8080/managedResource/v1
+  servicesproductConfigurationService: http://productconfigurator-service:8080/productConfigurator/v0/productConfiguration
+  servicesShoppingCartModifyUrl: http://shoppingcart-modify-service:8080/shoppingCart/v1
+
+  defaultLocale: 'en-US'
+  supportedLocales: 'en-US' 
+  loggingLevelOrgSpringframework: WARN
+  loggingLevelOrgApache: WARN
+  loggingLevelComAmdocsDigitalMS: WARN
+  loggingLevelComAmdocsMsnextBootBoot: INFO
+  
+  securityjwtCertificateRoot1: '"-----BEGIN CERTIFICATE-----\n\
+  MIIFljCCA36gAwIBAgIJAMQX5Y2ivqjgMA0GCSqGSIb3DQEBCwUAMFgxCzAJBgNVBAYTAklMMQ8wDQYDVQQIDAZJc3JhZWwxEDAOBgNVBAcMB1JhYW5hbmExDzANBgNVBAoMBkFNRE9DUzEVMBMGA1UEAwwMQW1kb2NzUm9vdENBMB4XDTE3MDcxMzEyMzMwOVoXDTE4MDcxMzEyMzMwOVowWDELMAkGA1UEBhMCSUwxDzANBgNVBAgMBklzcmFlbDEQMA4GA1UEBwwHUmFhbmFuYTEPMA0GA1UECgwGQU1ET0NTMRUwEwYDVQQDDAxBbWRvY3NSb290Q0EwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDWt/q53svMkwZoMpCPhLIXXLfSfS/+dNxZaYFVl1dMa9ebyxzkO7y9MAak13jq2xla3uN5xE5ByWs+YM+6kKQy5yq4Z+9fp2bcCLdumi7JWPZVkuqNGvhwMnTf5G6cZuWUfuPJRo59xRZmSlSDyLfNf+RK5hmrhqkUguWE1ejp9nG2XiNLLQqQiuBvGFtwYN2DI6ezZEK2U2xqyf7UrPVnyJaSodN6NGnBR2NyW8uscK9vVBSw+Aq4mitqcmNIeHqOl6F3G/nVnWs6jL+LTPs3tJdfcAv3O0Bzrz6K4ZYPLCkrSlCmg+R0ppt1voyXIzIYEg17JmjmvQ6B5WvlVY2B5xx1yeL0cRnA2Zzv27JnVrKrIlA8Nqao6pIcin6HfVbE5ZFr392veTsut2IafYi8UrmxhQwYdvvUXwVjim6VTy8yCXkddFtvmU2DvOClcqs3/VGxDd254kVbLE+XjFJhYIgut03SWjXGURzM8UH3y9zKPfZCi04w69LxRLY0SpKBKOcC+gsxJRu4RkFlmHnRg83Bmp5AnEvPkRCsMVVc+Ed2uXGvx3fx8KD/9ulHsV/Ct4X5Bt2KI7tprfqc1vB3YBNt8c10BOUg4j9vkPfNC6Ev5nT2nsnCWkLCrKesMW6rMr/0VNc5Aq+/SQIuP1qHor82RndQaZAW3VALfKW5xwIDAQABo2MwYTAdBgNVHQ4EFgQUblzqNYb9SvHJt4Ev7Zmn4DSN+GUwHwYDVR0jBBgwFoAUblzqNYb9SvHJt4Ev7Zmn4DSN+GUwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAYYwDQYJKoZIhvcNAQELBQADggIBAKgfA5hAOQZy1NWYoMo6LQk4sK+/3ONDq1j4pJJeEwCUTdnz7jJv7prqjICi5IW/uFzK4tHjUsD16b+PEaKGJo70zSrWowPt7SI04ihgVhyGGX2otp6eV/Y5fsOThVMtB+pU31XLuxfTO5swBfGIgIdxSC1SxxVlSHPBJKLL9mq3pCogcw7IKzAF/SKC0RckYCZsea8uUFD+wcoUAV9T4rAr4K90S9LM/Jxk3sukRmYMcLdJikaat7Zbk+9u+gPtMUS2z2GiQxkZfamc6QNzTQptdgUmYRAP0T2fBudG1/PxrYrGXakxrbZXOZ4qANo2snnuUvGeK+HJJLDxRZVdNPae2Zt9soFZj12nS0WY4mYJi4+hYi+BFfAbZSlVnr7iZ4j1GCxVCQvzogPyE7IjR98z0ev9bqN/dvzTzkHfw6cvfgP0Eq5R1QuOcwcFu4Hi8VUUk8iyzA/++kV+8t7r0Q2nXG5HyBV5FDhUg1ylfsxEzZrsJ2lA/JGpwDUB8HZc4F5+hWi3wm0/YQw0nG0w53ndJ5DH8M/LkyQgfnl43F1Rn47YVpfdeKTCEMbh5LbGEX7MMDQ5iEwTZyH9j+ZJZLlUSAsExQEGeZztmVU5bsiFa/gULGakZ9WodbA42jvgfZw97nXgac+lxY1lHfabywS0GpeXDsYevM8K+2Pe+FgW\n\
+  -----END CERTIFICATE-----"'
+  securityjwtCertificateRoot2: '"-----BEGIN CERTIFICATE-----\n\
+  MIIDTTCCAjWgAwIBAgIJANW4XK+XYFzjMA0GCSqGSIb3DQEBCwUAMB4xHDAaBgNVBAMME0FtZG9jcyBUZXN0IFJvb3QgQ0EwHhcNMTcxMDAxMDkyNTM3WhcNMjcwOTI5MDkyNTM3WjAeMRwwGgYDVQQDDBNBbWRvY3MgVGVzdCBSb290IENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyePyZi0x/Jkblj8t3BpQFfVqMImq78JLYDUY1ira8xJp0tyG2KJRED0Rl0hVngbCdi1kSzTtBr2v57eVhYO08Fs1Gkg6Bm1C9XgQ6mCkHgocNw8uHLONsJZSe7oa4T1AuiNCfANlLYTi8ZRxEbPjXIAt4LLBlwXxev/My/WYBSgM/jPUEfysnCnAEsgNLcKvzUOeMeTj/QIseg2WgekdoQCsZWGLM3ecruwNXXGPOEDX7q1wfBhhLf3VtGdZ4MlNoPbV4OXL4n1dWgH2yHzKkzYmLi5zOYAok23kg0HHHkJavKYRPrjiKyZfROge4FOaDobypyx9tC9j9h33zA0nIQIDAQABo4GNMIGKMB0GA1UdDgQWBBTzstrTygZj/dtxGIonjIVjfDKz4DBOBgNVHSMERzBFgBTzstrTygZj/dtxGIonjIVjfDKz4KEipCAwHjEcMBoGA1UEAwwTQW1kb2NzIFRlc3QgUm9vdCBDQYIJANW4XK+XYFzjMAwGA1UdEwQFMAMBAf8wCwYDVR0PBAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCpexua+V5Uh8Z5ShH02My+pCY+ulVlrPx97F2kHKZk+6aeWrb3Iwq0oNNOENE/X0zx1ZLGHyxqtxz8ehsOPYlYtfCeGtXQO6iNDyVcl0W7LASeDFrT8E1ZVhaZfXq9SpfYgF2QGL3NAtg//w1J1IJfzZGas6Fi7wL3koVJjsKuKtoMOdM634iEJdf4jgkEG5FOMIMqXBM937L69fibFgWLW6JVJ4LrY+FOtOcs3zuAKu+WVKcGgR8YDbBu60LWXd5+GAhrt9R6HSIbhuwzM8WaSzr/MBfdaMFO3NqqZZXIqasIFqok8LSsbRqQVnSnH7CohkrW5pQa+Ol7CXVYDXGj\n\
+  -----END CERTIFICATE-----"'
+  securitya3sUser: shoppingcart-experience-app-id
+  securitya3sUrl: 'http://asm-services-cloud-service:9191/asmServices/services/v1.0'
+  securitya3sPassword: eyJrdCI6IkRFSyIsImttc28iOnsia21zIjp7Imttc3QiOiJGQUtFIiwiYXQiOnsid2siOiJBYW1zUGY3eTk0dUxtT295MDEvSmVBIn19fSwiYXQiOnsicHIiOnsiYWxnIjoiQUVTIiwia3MiOjEyOCwiY3BociI6IkFFUy9HQ00vTm9QYWRkaW5nIn19fQ.eyJ0cyI6MTUwODY4NTIzMywicGwiOiJnN0VvWGRUNUZ6QTl5OXJzSzFlZnJ5ZS9lMFE5MkpnIiwiYXQiOnsidGxlbiI6MTI4LCJpdiI6Ii9oNHJjRXd0akUraGkxRTAifX0
+  changeOwnershipProductOrder: Write
+  securityBasicEnabled: false
+  apigwEnabled: false
+
+  productOfferingTypeMobileBundle: Mobile_Bundle,Mobile_Offer
+  productOfferingTypeMobileDevice: Mobile_Device
+  productOfferingTypeMobilePlan: Mobile_Plan_Bill_Pay,Mobile_Plan_Prepay,Mobile_Plan,T_Mobile_Plan
+  productOfferingTypeMobileSim: SIM
+  productOfferingTypeMobileAddOn: Addtional_Phone_Number,Data_Allowance_Bill_Pay,Data_Allowance_Prepay,Directory_Listing,Intercept_Message,International_Calls_Plan,Roaming_Calls_Plan,T_Stream_Saver,T_Video_Streaming,Tracking,Voice_Allowance_Bill_Pay,Voicemail,Additional_Packages
+  productOfferingTypeMobileAccessory: Accessory,Headphones,Phone_Case,T_Accessory
+   
