@@ -3,7 +3,7 @@ entries:
   mychart:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-11-29T23:40:37.90614-05:00
+    created: 2018-11-30T12:49:46.689938-05:00
     description: A Helm chart for Kubernetes
     digest: 1ca23df89d13b915caffdde23703071eba42293f4f6ef4e483d4d0724e13a433
     name: mychart
@@ -12,7 +12,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-11-29T23:40:37.905916-05:00
+    created: 2018-11-30T12:49:46.689514-05:00
     description: A Helm chart for Kubernetes
     digest: 94c4d62698eed9daa49d1739eec922add756b6805f268b5e4f21c667d5eb6a22
     name: mychart
@@ -21,7 +21,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-11-29T23:40:37.905621-05:00
+    created: 2018-11-30T12:49:46.688806-05:00
     description: A Helm chart for Kubernetes
     digest: 341c49e850ac3144ff2181e720c27dd32fa2a6eaf1526a1c5845683a9880d2db
     name: mychart
@@ -29,11 +29,11 @@ entries:
     - mychart-0.1.0.tgz
     version: 0.1.0
   shoppingcart-experience:
-  - created: 2018-11-29T23:40:37.907135-05:00
+  - created: 2018-11-30T12:49:46.69161-05:00
     description: Helm chart for shoppingcart-experience-ms
     digest: cb3dbe477e9ec6667e905930697aa1cd7109b1663d8eb8e216cb88798c2fad9c
     name: shoppingcart-experience
     urls:
     - shoppingcart-experience-0.1.1-0031.tgz
     version: 0.1.1-0031
-generated: 2018-11-29T23:40:37.90528-05:00
+generated: 2018-11-30T12:49:46.686376-05:00
