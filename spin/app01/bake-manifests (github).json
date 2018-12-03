@@ -1,0 +1,115 @@
+Could not read configuration file from /Users/yingbinz/.spin/config.
+{
+ "application": "shoppingcart-experience",
+ "expectedArtifacts": [
+  {
+   "defaultArtifact": {
+    "id": "ab882fd9-08b0-40f3-9616-a82ec29c18c8",
+    "kind": "default.github",
+    "name": "shoppingcart-experience-0.1.1-0031.tgz",
+    "reference": "https://api.github.com/repos/zhl2n/helm-charts/contents/shoppingcart-experience-0.1.1-0031.tgz",
+    "type": "github/file",
+    "version": "master"
+   },
+   "id": "6a6eaaf5-7712-4654-82ba-47a409fbec84",
+   "matchArtifact": {
+    "id": "3e098071-fb2d-4b20-aae7-a5372e0be417",
+    "kind": "github",
+    "name": "/shoppingcart-experience-0.1.1-0031.tgz",
+    "type": "github/file"
+   },
+   "useDefaultArtifact": true,
+   "usePriorArtifact": false
+  },
+  {
+   "defaultArtifact": {
+    "id": "0cfe89d6-f61a-4fbc-85aa-707e0396e779",
+    "kind": "default.github",
+    "name": "shoppingcart-experience/values.yaml",
+    "reference": "https://api.github.com/repos/zhl2n/helm-charts/contents/shoppingcart-experience/values.yaml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "id": "8fcf3f8f-b3bd-4689-adfe-4b0b8f4b5819",
+   "matchArtifact": {
+    "id": "a48748bb-ad9f-474e-a067-afaa36f8c3fe",
+    "kind": "github",
+    "name": "helm-charts/shoppingcart-experience//values.yaml",
+    "type": "github/file"
+   },
+   "useDefaultArtifact": true,
+   "usePriorArtifact": false
+  }
+ ],
+ "id": "fe6fe656-9dd2-4d32-954e-d28a7e03c0b7",
+ "index": 0,
+ "keepWaitingPipelines": false,
+ "lastModifiedBy": "anonymous",
+ "limitConcurrent": true,
+ "name": "bake-manifests (github)",
+ "stages": [
+  {
+   "expectedArtifacts": [
+    {
+     "defaultArtifact": {},
+     "id": "6bba2651-4296-4631-978e-98269fdcaabc",
+     "matchArtifact": {
+      "kind": "base64",
+      "name": "shoppingcart-experience",
+      "type": "embedded/base64"
+     },
+     "useDefaultArtifact": false
+    }
+   ],
+   "inputArtifacts": [
+    {
+     "account": "my-github-artifact-account",
+     "id": "6a6eaaf5-7712-4654-82ba-47a409fbec84"
+    },
+    {
+     "account": "my-github-artifact-account",
+     "id": "8fcf3f8f-b3bd-4689-adfe-4b0b8f4b5819"
+    }
+   ],
+   "name": "Bake (Manifest)",
+   "namespace": "default",
+   "outputName": "shoppingcart-experience",
+   "overrides": {},
+   "refId": "1",
+   "requisiteStageRefIds": [],
+   "templateRenderer": "HELM2",
+   "type": "bakeManifest"
+  },
+  {
+   "account": "my-k8s-v2-account",
+   "cloudProvider": "kubernetes",
+   "manifestArtifactAccount": "embedded-artifact",
+   "manifestArtifactId": "6bba2651-4296-4631-978e-98269fdcaabc",
+   "moniker": {
+    "app": "shoppingcart-experience"
+   },
+   "name": "Deploy (Manifest)",
+   "refId": "2",
+   "relationships": {
+    "loadBalancers": [],
+    "securityGroups": []
+   },
+   "requisiteStageRefIds": [
+    "1"
+   ],
+   "source": "artifact",
+   "type": "deployManifest"
+  }
+ ],
+ "triggers": [
+  {
+   "branch": "master",
+   "enabled": true,
+   "project": "zhl2n",
+   "slug": "helm-charts",
+   "source": "github",
+   "type": "git"
+  }
+ ],
+ "updateTs": "1543552718000"
+}
