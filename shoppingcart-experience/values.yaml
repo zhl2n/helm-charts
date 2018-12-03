@@ -9,8 +9,7 @@ deploymentStrategy:
   maxUnavailable: 1
 containerinfo:
 #  image: illin5564.corp.amdocs.com:7000/shoppingcart-experience-service
-#  image: ubuntu
-  image: java
+  image: ubuntu
   imagePullPolicy: IfNotPresent
 #  imageTag: 0.1.1-0031
   imageTag: latest
