@@ -1,0 +1,280 @@
+{
+   "application": "cluster",
+   "expectedArtifacts": [
+      {
+         "defaultArtifact": {
+            "reference": "index.docker.io/yourorg/app",
+            "type": "docker/image"
+         },
+         "id": "docker-name",
+         "matchArtifact": {
+            "name": "docker-name",
+            "type": "docker/image"
+         },
+         "useDefaultArtifact": true,
+         "usePriorArtifact": false
+      },
+      {
+         "defaultArtifact": {
+            "reference": "https://gitlab.com/api/v4/projects/your-org%2Fyour-project/repository/files/app%2Fmanifest%2Eyaml/raw",
+            "type": "gitlab/file",
+            "version": "master"
+         },
+         "id": "app/manifest.yaml",
+         "matchArtifact": {
+            "name": "app/manifest.yaml",
+            "type": "gitlab/file"
+         },
+         "useDefaultArtifact": true,
+         "usePriorArtifact": false
+      }
+   ],
+   "keepWaitingPipelines": false,
+   "limitConcurrent": true,
+   "name": "Demo pipeline",
+   "notifications": [
+      {
+         "address": "someone@example.com",
+         "cc": "test@example.com",
+         "level": "pipeline",
+         "type": "email",
+         "when": [
+            "pipeline.starting"
+         ]
+      },
+      {
+         "address": "development",
+         "level": "pipeline",
+         "message": {
+            "pipeline.complete": {
+               "text": "test"
+            },
+            "pipeline.failed": {
+               "text": "testf: one two three, $variable, %value, \"quoted\": https://example.com"
+            }
+         },
+         "type": "slack",
+         "when": [
+            "pipeline.starting",
+            "pipeline.failed",
+            "pipeline.complete"
+         ]
+      }
+   ],
+   "stages": [
+      {
+         "name": "Wait",
+         "refId": "Wait",
+         "requisiteStageRefIds": [ ],
+         "skipWaitText": "Custom wait message",
+         "type": "wait",
+         "waitTime": 30
+      },
+      {
+         "account": "my-k8s-v2-account",
+         "cloudProvider": "kubernetes",
+         "manifests": [
+            {
+               "apiVersion": "apps/v1",
+               "kind": "Deployment",
+               "metadata": {
+                  "labels": {
+                     "app": "nginx"
+                  },
+                  "name": "nginx-deployment"
+               },
+               "spec": {
+                  "replicas": 3,
+                  "selector": {
+                     "matchLabels": {
+                        "app": "nginx"
+                     }
+                  },
+                  "template": {
+                     "metadata": {
+                        "labels": {
+                           "app": "nginx"
+                        }
+                     },
+                     "spec": {
+                        "containers": [
+                           {
+                              "image": "nginx:1.7.9",
+                              "name": "nginx",
+                              "ports": [
+                                 {
+                                    "containerPort": 80
+                                 }
+                              ]
+                           }
+                        ]
+                     }
+                  }
+               }
+            }
+         ],
+         "moniker": {
+            "app": "cluster",
+            "cluster": "some-cluster",
+            "detail": "someDetail",
+            "stack": "someStack"
+         },
+         "name": "Deploy a manifest",
+         "refId": "Deploy a manifest",
+         "requisiteStageRefIds": [
+            "Wait"
+         ],
+         "source": "text",
+         "type": "deployManifest"
+      },
+      {
+         "account": "my-k8s-v2-account",
+         "cloudProvider": "kubernetes",
+         "manifests": [
+            {
+               "apiVersion": "apps/v1",
+               "kind": "Deployment",
+               "metadata": {
+                  "labels": {
+                     "app": "nginx"
+                  },
+                  "name": "nginx-deployment-canary"
+               },
+               "spec": {
+                  "replicas": 3,
+                  "selector": {
+                     "matchLabels": {
+                        "app": "nginx",
+                        "canary": "true"
+                     }
+                  },
+                  "template": {
+                     "metadata": {
+                        "labels": {
+                           "app": "nginx",
+                           "canary": "true"
+                        }
+                     },
+                     "spec": {
+                        "containers": [
+                           {
+                              "image": "nginx:1.7.9",
+                              "name": "nginx",
+                              "ports": [
+                                 {
+                                    "containerPort": 80
+                                 }
+                              ]
+                           }
+                        ]
+                     }
+                  }
+               }
+            }
+         ],
+         "moniker": {
+            "app": "cluster",
+            "cluster": "some-cluster",
+            "detail": "someDetail",
+            "stack": "someStack"
+         },
+         "name": "Deploy a canary manifest",
+         "refId": "Deploy a canary manifest",
+         "requisiteStageRefIds": [
+            "Wait"
+         ],
+         "source": "text",
+         "type": "deployManifest"
+      },
+      {
+         "account": "my-k8s-v2-account",
+         "cloudProvider": "kubernetes",
+         "manifestArtifactAccount": "gitlab-account",
+         "manifestArtifactId": "app/manifest.yaml",
+         "moniker": {
+            "app": "cluster",
+            "cluster": "some-cluster",
+            "detail": "someDetail",
+            "stack": "someStack"
+         },
+         "name": "Deploy a manifest with artifact",
+         "overrideTimeout": true,
+         "refId": "Deploy a manifest with artifact",
+         "requisiteStageRefIds": [
+            "Wait"
+         ],
+         "source": "artifact",
+         "stageTimeoutMs": "300000",
+         "type": "deployManifest"
+      },
+      {
+         "account": "my-k8s-v2-account",
+         "cloudProvider": "kubernetes",
+         "location": "default",
+         "manifestName": "Deployment nginx-deployment",
+         "name": "Find nginx-deployment",
+         "refId": "Find nginx-deployment",
+         "requisiteStageRefIds": [
+            "Deploy a manifest",
+            "Deploy a canary manifest",
+            "Deploy a manifest with artifact"
+         ],
+         "type": "findArtifactsFromResource"
+      },
+      {
+         "job": "smoketest",
+         "markUnstableAsSuccessful": "false",
+         "master": "staging-jenkins",
+         "name": "Run Jenkins Job",
+         "notifications": [
+            {
+               "address": "development",
+               "level": "stage",
+               "message": {
+                  "stage.complete": {
+                     "text": "test"
+                  },
+                  "stage.failed": {
+                     "text": "testf: one two three, $variable, %value, \"quoted\": https://example.com"
+                  }
+               },
+               "type": "slack",
+               "when": [
+                  "stage.starting",
+                  "stage.failed",
+                  "stage.complete"
+               ]
+            }
+         ],
+         "overrideTimeout": true,
+         "refId": "Run Jenkins Job",
+         "requisiteStageRefIds": [
+            "Find nginx-deployment"
+         ],
+         "stageTimeoutMs": "300000",
+         "type": "jenkins",
+         "waitForCompletion": "true"
+      }
+   ],
+   "triggers": [
+      {
+         "account": "docker-account",
+         "enabled": true,
+         "name": "myDockerTrigger",
+         "organization": "your-docker-org",
+         "registry": "index.docker.io",
+         "repository": "yourorg/app",
+         "tag": "^git-.*$",
+         "type": "docker"
+      },
+      {
+         "branch": "master",
+         "enabled": true,
+         "name": "myGitTrigger",
+         "project": "your-org",
+         "slug": "your-project",
+         "source": "gitlab",
+         "type": "git"
+      }
+   ]
+}
