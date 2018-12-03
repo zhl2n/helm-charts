@@ -75,12 +75,12 @@ spec:
                       
         image: "{{.Values.containerinfo.image}}:{{.Values.containerinfo.imageTag}}"
         imagePullPolicy: "{{.Values.containerinfo.imagePullPolicy}}"
-        livenessProbe:
-          httpGet:
-            path: "/health"
-            port: 18080
-          initialDelaySeconds: {{.Values.containerinfo.livenessProbe.initialDelaySeconds}}
-          timeoutSeconds: {{.Values.containerinfo.livenessProbe.timeoutSeconds}}
+#        livenessProbe:
+#          httpGet:
+#            path: "/health"
+#            port: 18080
+#          initialDelaySeconds: {{.Values.containerinfo.livenessProbe.initialDelaySeconds}}
+#          timeoutSeconds: {{.Values.containerinfo.livenessProbe.timeoutSeconds}}
         name: "shoppingcart-experience-service-container"
         resources:
           requests:
@@ -109,12 +109,12 @@ spec:
           - name: {{.Values.containerinfo.volumes.name}}
             mountPath: "{{.Values.containerinfo.volumeMounts.mountPath}}"
         {{- end}}
-        readinessProbe:
-          httpGet:
-            path: "/health"
-            port: 18080
-          initialDelaySeconds: {{.Values.containerinfo.readinessProbe.initialDelaySeconds}}
-          timeoutSeconds: {{.Values.containerinfo.readinessProbe.timeoutSeconds}}
+#        readinessProbe:
+#          httpGet:
+#            path: "/health"
+#            port: 18080
+#          initialDelaySeconds: {{.Values.containerinfo.readinessProbe.initialDelaySeconds}}
+#          timeoutSeconds: {{.Values.containerinfo.readinessProbe.timeoutSeconds}}
         securityContext:
           privileged: false
       imagePullSecrets:
