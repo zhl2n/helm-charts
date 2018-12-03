@@ -75,6 +75,7 @@ spec:
                       
 #        image: "{{.Values.containerinfo.image}}:{{.Values.containerinfo.imageTag}}"
         image: ubuntu
+        command: ["/bin/bash", "-ec", "while :; do echo '.'; sleep 5 ; done"]
         imagePullPolicy: "{{.Values.containerinfo.imagePullPolicy}}"
 #        livenessProbe:
 #          httpGet:
