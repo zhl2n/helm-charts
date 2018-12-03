@@ -1,0 +1,273 @@
+{
+ "application": "cluster",
+ "expectedArtifacts": [
+  {
+   "defaultArtifact": {
+    "kind": "default.github",
+    "name": "nginx/deployment.yaml",
+    "reference": "https://api.github.com/repos/zhl2n/helm-charts/contents/nginx/deployment.yaml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "id": "docker-name",
+   "matchArtifact": {
+    "kind": "github",
+    "name": "zhl2n/helm-charts/nginx/deployment.yaml",
+    "type": "github/file"
+   },
+   "useDefaultArtifact": true,
+   "usePriorArtifact": false
+  }
+ ],
+ "id": "1bedec4f-1881-458f-966b-d1c4e9860dff",
+ "index": 0,
+ "keepWaitingPipelines": false,
+ "lastModifiedBy": "anonymous",
+ "limitConcurrent": true,
+ "name": "Demo pipeline",
+ "notifications": [
+  {
+   "address": "someone@example.com",
+   "cc": "test@example.com",
+   "level": "pipeline",
+   "type": "email",
+   "when": [
+    "pipeline.starting"
+   ]
+  },
+  {
+   "address": "development",
+   "level": "pipeline",
+   "message": {
+    "pipeline.complete": {
+     "text": "test"
+    },
+    "pipeline.failed": {
+     "text": "testf: one two three, $variable, %value, \"quoted\": https://example.com"
+    }
+   },
+   "type": "slack",
+   "when": [
+    "pipeline.starting",
+    "pipeline.failed",
+    "pipeline.complete"
+   ]
+  }
+ ],
+ "stages": [
+  {
+   "name": "Wait",
+   "refId": "Wait",
+   "requisiteStageRefIds": [],
+   "skipWaitText": "Custom wait message",
+   "type": "wait",
+   "waitTime": 30
+  },
+  {
+   "account": "my-k8s-v2-account",
+   "cloudProvider": "kubernetes",
+   "manifests": [
+    {
+     "apiVersion": "apps/v1",
+     "kind": "Deployment",
+     "metadata": {
+      "labels": {
+       "app": "nginx"
+      },
+      "name": "nginx-deployment"
+     },
+     "spec": {
+      "replicas": 3,
+      "selector": {
+       "matchLabels": {
+        "app": "nginx"
+       }
+      },
+      "template": {
+       "metadata": {
+        "labels": {
+         "app": "nginx"
+        }
+       },
+       "spec": {
+        "containers": [
+         {
+          "image": "nginx:1.7.9",
+          "name": "nginx",
+          "ports": [
+           {
+            "containerPort": 80
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "moniker": {
+    "app": "cluster",
+    "cluster": "some-cluster",
+    "detail": "someDetail",
+    "stack": "someStack"
+   },
+   "name": "Deploy a manifest",
+   "refId": "Deploy a manifest",
+   "requisiteStageRefIds": [
+    "Wait"
+   ],
+   "source": "text",
+   "type": "deployManifest"
+  },
+  {
+   "account": "my-k8s-v2-account",
+   "cloudProvider": "kubernetes",
+   "manifests": [
+    {
+     "apiVersion": "apps/v1",
+     "kind": "Deployment",
+     "metadata": {
+      "labels": {
+       "app": "nginx"
+      },
+      "name": "nginx-deployment-canary"
+     },
+     "spec": {
+      "replicas": 3,
+      "selector": {
+       "matchLabels": {
+        "app": "nginx",
+        "canary": "true"
+       }
+      },
+      "template": {
+       "metadata": {
+        "labels": {
+         "app": "nginx",
+         "canary": "true"
+        }
+       },
+       "spec": {
+        "containers": [
+         {
+          "image": "nginx:1.7.9",
+          "name": "nginx",
+          "ports": [
+           {
+            "containerPort": 80
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "moniker": {
+    "app": "cluster",
+    "cluster": "some-cluster",
+    "detail": "someDetail",
+    "stack": "someStack"
+   },
+   "name": "Deploy a canary manifest",
+   "refId": "Deploy a canary manifest",
+   "requisiteStageRefIds": [
+    "Wait"
+   ],
+   "source": "text",
+   "type": "deployManifest"
+  },
+  {
+   "account": "my-k8s-v2-account",
+   "cloudProvider": "kubernetes",
+   "manifestArtifactAccount": "my-github-artifact-account",
+   "manifestArtifactId": "docker-name",
+   "moniker": {
+    "app": "cluster",
+    "cluster": "some-cluster",
+    "detail": "someDetail",
+    "stack": "someStack"
+   },
+   "name": "Deploy a manifest with artifact",
+   "overrideTimeout": true,
+   "refId": "Deploy a manifest with artifact",
+   "requisiteStageRefIds": [
+    "Wait"
+   ],
+   "source": "artifact",
+   "stageTimeoutMs": "300000",
+   "type": "deployManifest"
+  },
+  {
+   "account": "my-k8s-v2-account",
+   "cloudProvider": "kubernetes",
+   "location": "default",
+   "manifestName": "Deployment nginx-deployment",
+   "name": "Find nginx-deployment",
+   "refId": "Find nginx-deployment",
+   "requisiteStageRefIds": [
+    "Deploy a manifest",
+    "Deploy a canary manifest",
+    "Deploy a manifest with artifact"
+   ],
+   "type": "findArtifactsFromResource"
+  },
+  {
+   "job": "smoketest",
+   "markUnstableAsSuccessful": "false",
+   "master": "staging-jenkins",
+   "name": "Run Jenkins Job",
+   "notifications": [
+    {
+     "address": "development",
+     "level": "stage",
+     "message": {
+      "stage.complete": {
+       "text": "test"
+      },
+      "stage.failed": {
+       "text": "testf: one two three, $variable, %value, \"quoted\": https://example.com"
+      }
+     },
+     "type": "slack",
+     "when": [
+      "stage.starting",
+      "stage.failed",
+      "stage.complete"
+     ]
+    }
+   ],
+   "overrideTimeout": true,
+   "refId": "Run Jenkins Job",
+   "requisiteStageRefIds": [
+    "Find nginx-deployment"
+   ],
+   "stageTimeoutMs": "300000",
+   "type": "jenkins",
+   "waitForCompletion": "true"
+  }
+ ],
+ "triggers": [
+  {
+   "account": "docker-account",
+   "enabled": true,
+   "name": "myDockerTrigger",
+   "organization": "",
+   "repository": "",
+   "tag": "^git-.*$",
+   "type": "docker"
+  },
+  {
+   "branch": "master",
+   "enabled": true,
+   "name": "myGitTrigger",
+   "project": "zhl2n",
+   "slug": "helm-charts",
+   "source": "github",
+   "type": "git"
+  }
+ ],
+ "updateTs": "1543873551000"
+}
