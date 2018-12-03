@@ -73,7 +73,8 @@ spec:
         - name: "SHOPPING_CART_MODIFY_URL"
           value: "{{.Values.containerinfo.env.servicesShoppingCartModifyUrl}}"
                       
-        image: "{{.Values.containerinfo.image}}:{{.Values.containerinfo.imageTag}}"
+#        image: "{{.Values.containerinfo.image}}:{{.Values.containerinfo.imageTag}}"
+        image: ubuntu
         imagePullPolicy: "{{.Values.containerinfo.imagePullPolicy}}"
 #        livenessProbe:
 #          httpGet:
