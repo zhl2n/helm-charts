@@ -32,7 +32,8 @@ spec:
 #          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
           image: "maiwj/kubernetes-python-client"
           imagePullPolicy: "{{ .Values.containerinfo.imagePullPolicy }}"
-          command: ["python", "-c", {{ .Files.Get "scripts/helmCleanup.py" | quote }} ]
+#          command: ["python", "-c", {{ .Files.Get "scripts/helmCleanup.py" | quote }} ]
+          command: ["python", "-V" ]
           env:
           - name: MICROSERVICE_NAME
             value: {{ .Release.Name }}
