@@ -30,7 +30,8 @@ spec:
         - name: a3s-install
 #          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
           image: "maiwj/kubernetes-python-client"
-          command: ["/opt/app-root/bin/python", "-c", {{ .Files.Get "scripts/deployA3S.py" | quote }} ]
+#          command: ["/opt/app-root/bin/python", "-c", {{ .Files.Get "scripts/deployA3S.py" | quote }} ]
+          command: ["python", "-V" ]
           env:
           - name: MICROSERVICE_NAME
             value: {{ .Release.Name }}
