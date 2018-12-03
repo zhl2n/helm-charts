@@ -28,7 +28,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: a3s-install
-          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
+#          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
+          image: "maiwj/kubernetes-python-client"
           command: ["/opt/app-root/bin/python", "-c", {{ .Files.Get "scripts/deployA3S.py" | quote }} ]
           env:
           - name: MICROSERVICE_NAME

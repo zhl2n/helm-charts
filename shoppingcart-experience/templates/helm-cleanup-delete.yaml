@@ -29,7 +29,8 @@ spec:
       serviceAccountName: {{.Values.jobs.helmServiceAccount}}
       containers:
         - name: helm-cleanup
-          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
+#          image: "{{ .Values.jobs.dockerRegistry }}/amd_python_kubernetes_client"
+          image: "maiwj/kubernetes-python-client"
           imagePullPolicy: "{{ .Values.containerinfo.imagePullPolicy }}"
           command: ["python", "-c", {{ .Files.Get "scripts/helmCleanup.py" | quote }} ]
           env:
